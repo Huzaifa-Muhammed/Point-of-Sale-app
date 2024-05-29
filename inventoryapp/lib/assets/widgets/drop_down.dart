@@ -1,0 +1,54 @@
+import 'package:flutter/material.dart';
+
+class MyDropDown extends StatefulWidget {
+
+  final List<String> items;
+  late String selectedItem;
+  final double? haveElevation;
+  final double? width;
+  final double? height;
+  MyDropDown({
+    required this.selectedItem,
+    required this.items,
+    this.haveElevation = 0,
+    this.width,
+    this.height,
+  });
+
+  @override
+  State<MyDropDown> createState() => _MyDropDownState();
+}
+
+class _MyDropDownState extends State<MyDropDown> {
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      elevation: widget.haveElevation ?? 0,
+      child: Container(
+        width: widget.width,
+        height: widget.height,
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: DropdownButton<String>(
+            value: widget.selectedItem,
+            icon: const Icon(Icons.arrow_drop_down),
+            iconSize: 24,
+            elevation: 16,
+            onChanged: (String? newValue) {
+              setState(() {
+                widget.selectedItem = newValue!; // Update selectedItem value
+              });
+            },
+            items: widget.items.map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          ),
+        ),
+      ),
+    );
+  }
+}
