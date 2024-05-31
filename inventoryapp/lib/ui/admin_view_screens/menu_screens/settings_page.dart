@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventoryapp/UI/auth_screens/login_screen.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -78,9 +79,9 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
               ListTile(
-                title: Text('Account Settings'),
+                title: Text('Log OUt'),
                 onTap: () {
-                  // Navigate to account settings page
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
               ),
             ],

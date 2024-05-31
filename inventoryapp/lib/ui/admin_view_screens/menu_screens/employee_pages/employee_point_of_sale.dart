@@ -1,7 +1,16 @@
+import 'dart:async';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:inventoryapp/Model/sold_item_class.dart';
+import 'package:inventoryapp/UI/auth_screens/login_screen.dart';
+import 'package:inventoryapp/assets/widgets/custom_drawer.dart';
+import 'package:inventoryapp/data/sold_items_data.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/import_items.dart';
+import '../../../../Model/item_class.dart';
+import '../../../../data/item_data.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'dart:io';
 
 class PointofSalePage extends StatefulWidget {
   @override
@@ -9,357 +18,283 @@ class PointofSalePage extends StatefulWidget {
 }
 
 class _PointofSalePageState extends State<PointofSalePage> {
-  String category = 'No category';
-  bool soldByEach = true;
-  bool trackStock = false;
-  String selectedItem = 'Color and shape';
-  Color selectedColor = Colors.green; // Default selected color
-  File? selectedImage; // Selected image file
-  TextEditingController stockController = TextEditingController();
-  final ImagePicker _picker = ImagePicker(); // Image picker instance
+  List<Item> cartItems = [];
+  Timer? _timer;
 
-  final List<Color> colors = [
-    Colors.grey,
-    Colors.red,
-    Colors.pink,
-    Colors.orange,
-    Colors.green,
-    Colors.blue,
-    Colors.purple,
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {});
+    });
+  }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
-    if (pickedFile != null) {
-      setState(() {
-        selectedImage = File(pickedFile.path);
-        selectedItem =
-        'Image'; // Set selected item to image when an image is picked
-      });
-    }
+  double getSubtotal() {
+    return cartItems.fold(0, (sum, item) => sum + double.parse(item.price));
+  }
+
+  void importItems() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => ImportItemsPage()));
+  }
+
+  void addItem() {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => AddItemPage()));
+  }
+
+  Widget buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.inbox,
+            size: 100,
+            color: Colors.grey,
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'No items available',
+            style: TextStyle(fontSize: 20, color: Colors.grey),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: importItems,
+                style: ElevatedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(),
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Import Items'),
+              ),
+              const SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: addItem,
+                style: ElevatedButton.styleFrom(
+                  shape: const RoundedRectangleBorder(),
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text('Add Item'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  void showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Error'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget buildItemList() {
+    return ListView.builder(
+      itemCount: ItemData.items.length,
+      itemBuilder: (context, index) {
+        final item = ItemData.items[index];
+        return ListTile(
+          title: Text(item.name),
+          subtitle: Text("Price: \$${item.price} - Category: ${item.category}"),
+          trailing: Text("Quantity: ${item.quantity}"),
+          onTap: () {
+            if (item.quantity=='0') {
+              showErrorDialog('This item is out of stock or quantity is invalid.');
+            } else if (item.price.isEmpty || item.name.isEmpty ) {
+              showErrorDialog('Item data is invalid. Item details like name or price is missing.');
+            } else {
+              setState(() {
+                Item cartItem = Item(
+                  id: item.id,
+                  name: item.name,
+                  price: item.price,
+                  quantity: (1).toString(),
+                  category: item.category,
+                  margin: item.margin,
+                );
+                cartItems.add(cartItem);
+                ItemData.items[index].quantity = (int.parse(ItemData.items[index].quantity)-1).toString();
+              });
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Widget buildCartList() {
+    return ListView.separated(
+      itemCount: cartItems.length,
+      separatorBuilder: (context, index) => const Divider(color: Colors.grey),
+      itemBuilder: (context, index) {
+        final cartItem = cartItems[index];
+        return ListTile(
+          title: Text(cartItem.name),
+          subtitle: Text("Price: \$${cartItem.price}"),
+          trailing: GestureDetector(
+              onTap: (){
+                setState(() {
+                  for(int i=0;i<ItemData.items.length;i++){
+                    if(ItemData.items[i].id==cartItem.id){
+                      ItemData.items[i].quantity= (int.parse(ItemData.items[i].quantity)+1).toString();
+                    }
+                  }
+                  cartItems.removeAt(index);
+                });
+              },
+              child: Icon(Icons.minimize)
+          ),
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final double cardWidth = MediaQuery
-        .of(context)
-        .size
-        .width * 2 / 3;
-
     return Scaffold(
+      drawer: CustomDrawer(
+        onProfilePressed: () {},
+        onAddItemPressed: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => AddItem(showAppBar: true)));
+        },
+        onLogoutPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => LoginScreen()));
+        },
+      ),
       appBar: AppBar(
-        foregroundColor: Colors.white,
-        title: Text('Create item'),
+        title: const Text(
+          'Point of Sale',
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: primaryColor,
-        actions: [
-          TextButton(
-            onPressed: () {
-              // Save functionality here
-            },
-            child: Text(
-              'SAVE',
-              style: TextStyle(
-                  color: Colors.white, fontSize: 16, letterSpacing: 2),
+        foregroundColor: Colors.white,
+      ),
+      body: Row(
+        children: [
+          // Items List
+          Expanded(
+            flex: 1,
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.grey),
+              ),
+              child: ItemData.items.isEmpty
+                  ? buildEmptyState()
+                  : buildItemList(),
+            ),
+          ),
+          // Divider
+          Container(
+            width: 1,
+            color: primaryColor,
+          ),
+          // Cart
+          Expanded(
+            flex: 1,
+            child: Column(
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey),
+                    ),
+                    child: buildCartList(),
+                  ),
+                ),
+                // Subtotal
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  color: primaryColor,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Subtotal:\t',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            '\$${getSubtotal().toStringAsFixed(2)}',
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Text(
+                            'Check Out',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: GestureDetector(
+                              onTap: (){
+                                setState(() {
+                                  List<Item> temp=cartItems;
+                                  for(int i=0;i<temp.length;i++){
+                                    SoldItem si=SoldItem(item: temp[i], date: DateTime(DateTime.now().day,DateTime.now().month,DateTime.now().year));
+                                    SoldItemsData.soldItems.add(si);
+                                    cartItems.clear();
+                                  }
+                                });
+                              },
+                              child: const Icon(Icons.arrow_right_outlined,color: Colors.white,size: 40,),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ],
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Combined Name, Category, Sold by, Price, Cost, SKU, and Barcode fields
-              Card(
-                child: Container(
-                  width: cardWidth,
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'Name',
-                            labelStyle: TextStyle(fontSize: 16,
-                                color: primaryColor),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: DropdownButtonFormField<String>(
-                          value: category,
-                          onChanged: (value) {
-                            setState(() {
-                              category = value!;
-                            });
-                          },
-                          items: ['No category', 'Category 1', 'Category 2']
-                              .map((label) =>
-                              DropdownMenuItem(
-                                child: Text(
-                                    label, style: TextStyle(color: primaryColor)),
-                                value: label,
-                              ))
-                              .toList(),
-                          decoration: InputDecoration(
-                            labelText: 'Category',
-                            labelStyle: TextStyle(fontSize: 16,
-                                color: primaryColor),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            Text('Sold by:', style: TextStyle(
-                                fontSize: 16, color: primaryColor)),
-                            Row(
-                              children: [
-                                Radio<bool>(
-                                  value: true,
-                                  groupValue: soldByEach,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      soldByEach = value!;
-                                    });
-                                  },
-                                ),
-                                Text('Each', style: TextStyle(
-                                    fontSize: 16, color: primaryColor)),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                Radio<bool>(
-                                  value: false,
-                                  groupValue: soldByEach,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      soldByEach = value!;
-                                    });
-                                  },
-                                ),
-                                Text('Weight', style: TextStyle(
-                                    fontSize: 16, color: primaryColor)),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Price',
-                                  labelStyle: TextStyle(
-                                      fontSize: 16, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Cost',
-                                  labelStyle: TextStyle(
-                                      fontSize: 16, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 16.0),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'SKU',
-                                  labelStyle: TextStyle(
-                                      fontSize: 16, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: EdgeInsets.only(left: 8.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'Barcode',
-                                  labelStyle: TextStyle(
-                                      fontSize: 16, color: primaryColor),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // Inventory switch with stock value input field
-              Card(
-                child: Container(
-                  width: cardWidth,
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(bottom: 8.0),
-                        child: Text('Inventory',
-                            style: TextStyle(fontSize: 14, color: primaryColor)),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Track stock', style: TextStyle(
-                              fontSize: 16, color: primaryColor)),
-                          Switch(
-                            value: trackStock,
-                            onChanged: (value) {
-                              setState(() {
-                                trackStock = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      if (trackStock)
-                        Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: TextFormField(
-                            controller: stockController,
-                            decoration: InputDecoration(
-                              labelText: 'Stock value',
-                              labelStyle: TextStyle(
-                                  fontSize: 16, color: primaryColor),
-                            ),
-                            keyboardType: TextInputType.number,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              // Additional options with color and image picker
-              Card(
-                child: Container(
-                  width: cardWidth,
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Color and shape', style: TextStyle(
-                              fontSize: 16, color: primaryColor)),
-                          Radio<String>(
-                            value: 'Color and shape',
-                            groupValue: selectedItem,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedItem = value!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      if (selectedItem == 'Color and shape')
-                        GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 5,
-                          children: colors.map((color) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  selectedColor = color;
-                                  selectedItem =
-                                  'Color and shape'; // Activate color radio button
-                                });
-                              },
-                              child: Container(
-                                margin: EdgeInsets.all(4.0),
-                                decoration: BoxDecoration(
-                                  color: color,
-                                  border: Border.all(
-                                    color: selectedColor == color
-                                        ? Colors.black
-                                        : Colors.transparent,
-                                    width: 2,
-                                  ),
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Image', style: TextStyle(
-                              fontSize: 16, color: primaryColor)),
-                          Radio<String>(
-                            value: 'Image',
-                            groupValue: selectedItem,
-                            onChanged: (value) {
-                              setState(() {
-                                selectedItem = value!;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      if (selectedItem == 'Image')
-                        GestureDetector(
-                          onTap: _pickImage,
-                          child: Container(
-                            margin: EdgeInsets.only(top: 16.0),
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: selectedImage != null
-                                ? Image.file(
-                              selectedImage!,
-                              fit: BoxFit.cover,
-                            )
-                                : Icon(
-                              Icons.add_a_photo,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

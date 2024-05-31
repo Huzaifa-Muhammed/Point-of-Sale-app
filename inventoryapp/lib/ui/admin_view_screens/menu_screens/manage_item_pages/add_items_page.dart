@@ -36,7 +36,7 @@ class _AddItemState extends State<AddItem> {
                         size: 100, color: primaryColor),
                     SizedBox(height: 20),
                     Text(
-                      'Have you managed your Items',
+                      'Add Your Items to Inventory',
                       style: GoogleFonts.aBeeZee(
                           fontSize: 16, color: Colors.black),
                       textAlign: TextAlign.center,
@@ -56,7 +56,7 @@ class _AddItemState extends State<AddItem> {
                             shape: RoundedRectangleBorder(),
                           ),
                           child: Text(
-                            "Add Items",
+                            "Add Item",
                             style: GoogleFonts.aBeeZee(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

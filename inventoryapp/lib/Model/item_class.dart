@@ -1,11 +1,14 @@
 class Item{
+  int id;
   final String name;
   final String category;
   final String price;
   final String margin;
-  final String quantity;
+  String quantity;
 
+  static int ID=1;
   Item({
+    required this.id,
     required this.name,
     required this.category,
     required this.price,

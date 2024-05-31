@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:inventoryapp/data/employee_data.dart';
-import 'package:inventoryapp/model/employee_class.dart';
+import '../../../../Model/employee_class.dart';
+import '../../../../data/employee_data.dart';
 
 class EmployeePage extends StatefulWidget {
   @override
@@ -75,9 +75,9 @@ class _EmployeePageState extends State<EmployeePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Center(
+          const Center(
             child: Text(
-              'Employee List',
+              'Employee Access List',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,

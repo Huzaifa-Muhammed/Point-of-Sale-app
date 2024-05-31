@@ -9,7 +9,7 @@ import 'package:inventoryapp/ui/admin_view_screens/menu_screens/extension_page.d
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/favorite_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/group_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/discount_page.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/discount_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/Item_list_Page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/profile_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/settings_page.dart';

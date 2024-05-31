@@ -58,10 +58,10 @@ class _SplashScreenState extends State<SplashScreen>{
                 borderRadius: const BorderRadius.only(bottomRight: Radius.elliptical(250, 200)),
               ),
             ),
-            Circle(circleSize: 20, circleColor: Colors.orange, circleLeftMargin: 300, circleTopMargin: 600, circleRightMargin: 0, circleBottomMargin: 0,),
-            Circle(circleSize: 40, circleColor: Colors.redAccent, circleLeftMargin: 200, circleTopMargin: 600, circleRightMargin: 0, circleBottomMargin: 0,),
-            Circle(circleSize: 100, circleColor: Colors.blueGrey, circleLeftMargin: 200, circleTopMargin: 650, circleRightMargin: 0, circleBottomMargin: 0,),
-            Circle(circleSize: 50, circleColor: Colors.lightGreenAccent, circleLeftMargin: 300, circleTopMargin: 730, circleRightMargin: 0, circleBottomMargin: 0,),
+            Circle(circleSize: 20, circleColor: Colors.orange, circleLeftMargin: _screenWidth-50, circleTopMargin: _screenHeight-200, circleRightMargin: 0, circleBottomMargin: 0,),
+            Circle(circleSize: 40, circleColor: Colors.redAccent, circleLeftMargin: _screenWidth-150, circleTopMargin: _screenHeight-200, circleRightMargin: 0, circleBottomMargin: 0,),
+            Circle(circleSize: 100, circleColor: Colors.blueGrey, circleLeftMargin: _screenWidth-150, circleTopMargin: _screenHeight-150, circleRightMargin: 0, circleBottomMargin: 0,),
+            Circle(circleSize: 50, circleColor: Colors.lightGreenAccent, circleLeftMargin: _screenWidth-50, circleTopMargin: _screenHeight-100, circleRightMargin: 0, circleBottomMargin: 0,),
           ],
         )
     );

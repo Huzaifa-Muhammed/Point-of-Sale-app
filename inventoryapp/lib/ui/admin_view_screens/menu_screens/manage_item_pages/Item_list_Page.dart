@@ -5,6 +5,7 @@ import '../../../../Utils/constants.dart';
 import '../../../../data/item_data.dart';
 import 'package:inventoryapp/Model/item_class.dart';
 import 'dart:async';
+import 'export_items.dart';
 
 class ItemListPage extends StatefulWidget {
   @override
@@ -49,7 +50,7 @@ class _ItemListPageState extends State<ItemListPage> {
                               children: [
                                 const Icon(Icons.category_outlined, size: 100, color: primaryColor),
                                 const SizedBox(height: 20),
-                                Text('Category will help you manage items', style: GoogleFonts.aBeeZee(fontSize: 16, color: Colors.black), textAlign: TextAlign.center,),
+                                Text("You didn't add any item to your app's inventory", style: GoogleFonts.aBeeZee(fontSize: 16, color: Colors.black), textAlign: TextAlign.center,),
                                 const SizedBox(height: 20),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -111,7 +112,7 @@ class _ItemListPageState extends State<ItemListPage> {
                                       Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(item.category),)),
                                       Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(item.price),)),
                                       Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(item.margin),)),
-                                      Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(item.quantity),)),
+                                      Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(item.quantity.toString()),)),
                                     ],
                                   );
                                 }).toList(),
@@ -125,6 +126,12 @@ class _ItemListPageState extends State<ItemListPage> {
           ),
         ),
       ),
+      floatingActionButton: ElevatedButton(
+        onPressed: () {
+          ExcelExporter.exportToExcel(context,items);
+        },
+        style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),backgroundColor: primaryColor,foregroundColor: Colors.white),
+        child: const Text('Export Items'),),
     );
   }
 }

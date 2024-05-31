@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/data/employee_data.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/employee_pages/employee_point_of_sale.dart';
 import '../../ui/home_screen.dart';
 
 class AuthScreenWidgets {
@@ -51,11 +53,31 @@ class AuthScreenWidgets {
   static Widget authScreenButton(BuildContext context,String _text,TextEditingController email,TextEditingController password) {
     return ElevatedButton(
       onPressed: () {
-        if(email.text=="admin123@gmail.com" && password.text=="Admin123"){
-          Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
-        }
-        else{
-          showDialog(context: context, builder: (BuildContext context){return notSignedInDialog('Email or password is wrong');});
+        if (email.text == "admin123@gmail.com" && password.text == "Admin123") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        } else {
+          bool userFound = false;
+          for (int i = 0; i < EmployeeData.employees.length; i++) {
+            if (email.text == EmployeeData.employees[i].email && password.text == EmployeeData.employees[i].password) {
+              userFound = true;
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => PointofSalePage()),
+              );
+              break;
+            }
+          }
+          if (!userFound) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return notSignedInDialog('Email or password is wrong');
+              },
+            );
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -63,7 +85,15 @@ class AuthScreenWidgets {
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 50),
         shape: const RoundedRectangleBorder(),
       ),
-      child: Text(_text, style: GoogleFonts.aBeeZee(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 20, letterSpacing: 4,),),
+      child: Text(
+        _text,
+        style: GoogleFonts.aBeeZee(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          letterSpacing: 4,
+        ),
+      ),
     );
   }
 

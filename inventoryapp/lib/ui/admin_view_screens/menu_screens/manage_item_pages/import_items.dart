@@ -39,6 +39,7 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
 
         for (var row in sheet.rows.skip(1)) {
           Item newItem = Item(
+            id: Item.ID,
             name: row[0]?.value?.toString() ?? '',
             category: row[1]?.value?.toString() ?? '',
             price: row[2]?.value?.toString() ?? '',
@@ -46,6 +47,7 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
             quantity: row[4]?.value?.toString() ?? '',
           );
           tempList.add(newItem);
+          Item.ID++;
 
           dataList.add({
             'Name': newItem.name,
