@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventoryapp/Utils/constants.dart';
 
 import '../../../Utils/image_paths.dart';
 
@@ -8,7 +9,7 @@ class ProfileApp extends StatelessWidget {
     return MaterialApp(
       title: 'Profile Page',
       theme: ThemeData(
-        primaryColor: Color(0xFF2C1E5E), // Dark purple shade
+        primaryColor: primaryColor, // Dark purple shade
       ),
       home: ProfilePage(),
     );
@@ -43,7 +44,7 @@ class _ProfilePageState extends State<ProfilePage> {
               SizedBox(height: 20),
               Center(
                 child: Text(
-                  'John Doe',
+                  'Admin',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -99,7 +100,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Icon(Icons.email, color: Colors.grey[600], size: 20),
                   SizedBox(width: 10),
                   Text(
-                    'john.doe@example.com',
+                    'admin123@gmail.com',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.grey[800],

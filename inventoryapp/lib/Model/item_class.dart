@@ -6,7 +6,7 @@ class Item{
   final String margin;
   String quantity;
 
-  static int ID=1;
+  static int I_ID=1;
   Item({
     required this.id,
     required this.name,

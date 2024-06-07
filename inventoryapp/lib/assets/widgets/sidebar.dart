@@ -26,40 +26,36 @@ class _SideBarState extends State<SideBar> {
       destinations:  [
         NavigationRailDestination(
           icon: Icon(Icons.account_circle,color: Colors.deepOrange.shade700,),
-          label: Text('Profile'),
+          label: const Text('Profile'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.bar_chart,color: Colors.greenAccent.shade700,),
-          label: Text('Dashboard'),
+          label: const Text('Dashboard'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.shopping_basket,color: Colors.pinkAccent.shade700,),
-          label: Text('Items'),
+          label: const Text('Items'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.trolley,color: Colors.lightBlueAccent.shade700,),
-          label: Text('Trolley'),
+          label: const Text('POS'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.contact_mail_rounded,color: Colors.lightGreenAccent.shade700,),
-          label: Text('Employee'),
+          label: const Text('Employee'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.group,color: Colors.deepPurple.shade700,),
-          label: Text('Customers'),
+          label: const Text('Customers'),
           indicatorColor: Colors.green
         ),
         NavigationRailDestination(
-          icon: Icon(Icons.extension,color: Colors.brown.shade700,),
-          label: Text('Extension'),
-        ),
-        NavigationRailDestination(
           icon: Icon(Icons.settings, color:Colors.blueGrey.shade700,),
-          label: Text('Setting'),
+          label: const Text('Setting'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.help_outline,color: Colors.blue.shade700,),
-          label: Text('About Us'),
+          label: const Text('About Us'),
         ),
       ],
     );

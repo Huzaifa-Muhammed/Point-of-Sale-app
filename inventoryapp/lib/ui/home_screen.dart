@@ -3,11 +3,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/aboutUs_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/dashboard_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/employee_pages/employee_list_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/employee_pages/employee_access_right.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/extension_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/favorite_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/group_page.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_customer_pages/customer_page.dart';
+import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_employee_pages/employee_point_of_sale.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/discount_page.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/Item_list_Page.dart';
@@ -15,6 +13,8 @@ import 'package:inventoryapp/ui/admin_view_screens/menu_screens/profile_page.dar
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/settings_page.dart';
 import '../Utils/image_paths.dart';
 import '../assets/widgets/sidebar.dart';
+import 'admin_view_screens/menu_screens/manage_employee_pages/employee_access_right.dart';
+import 'admin_view_screens/menu_screens/manage_employee_pages/employee_list_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -31,12 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       ProfilePage(),
-      DashboardPage(),
+      DashboardPage(false),
       FavoritePage(),
-      FavoritePage(),
-      EmployeePage(),
-      GroupsPage(),
-      ExtensionPage(),
+      PointofSalePage(false,eRole: ""),
+      EmployeeAccessRightsPage(),
+      CustomerPage(),
       SettingsPage(),
       AboutUsPage(),
     ];
@@ -47,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
     final List<Widget> employeePages=[
       EmployeeList(),
-      EmployeePage(),
+      EmployeeAccessRightsPage(),
     ];
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
@@ -109,8 +108,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           _selectedIndex==2?_cartSelectedIndex=0:_employeeSelectedIndex=0;
                         });
                       },
-                      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(),fixedSize: Size.fromWidth(150)),
-                      child: _selectedIndex==4?Text('Employee List'):Text('Add Items'),
+                      style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150),),
+                      child: _selectedIndex==4?const Text('Employee List'):const Text('Add Items'),
                     ),
                     ElevatedButton(
                       onPressed: () {
@@ -118,8 +117,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           _selectedIndex==2?_cartSelectedIndex=1:_employeeSelectedIndex=1;
                         });
                       },
-                      style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(),fixedSize: Size.fromWidth(150)),
-                      child: _selectedIndex==4?Text('Access Right'):Text('Items List'),
+                      style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150)),
+                      child: _selectedIndex==4?const Text('Access Right'):const Text('Items List'),
                     ),
                     if(_selectedIndex==2)
                       ElevatedButton(
@@ -128,8 +127,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             _cartSelectedIndex=2;
                           });
                         },
-                        style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(),fixedSize: Size.fromWidth(150)),
-                        child: Text('Discount'),
+                        style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150)),
+                        child: const Text('Discount'),
                       ),
                   ],
                 ),

@@ -77,7 +77,7 @@ class _AddItemState extends State<AddItem> {
                             shape: RoundedRectangleBorder(),
                           ),
                           child: Text(
-                            "Important Items",
+                            "Import Items",
                             style: GoogleFonts.aBeeZee(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,

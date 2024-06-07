@@ -140,14 +140,14 @@ class _AddItemPageState extends State<AddItemPage> {
                   {
                     setState(() {
                       ItemData.items.add(Item(
-                        id: Item.ID,
+                        id: Item.I_ID,
                         name: nameController.text,
                         category: categoryController.text,
                         margin: marginController.text,
                         quantity: quantityController.text,
                         price: priceController.text,
                       ));
-                      Item.ID++;
+                      Item.I_ID++;
                     });
                     nameController.clear();
                     categoryController.clear();

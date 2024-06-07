@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../Model/chart_data.dart';
+import '../../../data/chart_data.dart';
 import '../drop_down.dart';
 import 'components/data_selection_button.dart';
 import 'components/line_chart.dart';

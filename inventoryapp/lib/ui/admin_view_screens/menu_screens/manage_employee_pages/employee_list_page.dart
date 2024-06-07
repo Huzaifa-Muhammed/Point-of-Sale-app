@@ -1,9 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/data/employee_data.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/employee_pages/add_employee_page.dart';
+
+import 'add_employee_page.dart';
 
 class EmployeeList extends StatefulWidget {
   @override

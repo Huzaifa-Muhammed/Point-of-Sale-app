@@ -40,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen>{
                   children: [
                     Padding(
                       padding: const EdgeInsets.only(top: 50),
-                      child: Text('Inventory Management System',style: GoogleFonts.cairo(color: Colors.white,letterSpacing:3,fontSize: 30,fontWeight: FontWeight.bold),),
+                      child: Text('Point of Sale Solution',style: GoogleFonts.cairo(color: Colors.white,letterSpacing:3,fontSize: 30,fontWeight: FontWeight.bold),),
                     ),
                     Image(image: AssetImage(images.lightLogo),width: 300,height: 300,),
                   ],

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
+import 'package:inventoryapp/Model/employee_checkIn_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/data/employee_checkIn_data.dart';
 import 'package:inventoryapp/data/employee_data.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/employee_pages/employee_point_of_sale.dart';
+import '../../ui/admin_view_screens/menu_screens/manage_employee_pages/employee_point_of_sale.dart';
 import '../../ui/home_screen.dart';
 
 class AuthScreenWidgets {
@@ -65,7 +67,7 @@ class AuthScreenWidgets {
               userFound = true;
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PointofSalePage()),
+                MaterialPageRoute(builder: (context) => PointofSalePage(true, eRole: EmployeeData.employees[i].role,)),
               );
               break;
             }

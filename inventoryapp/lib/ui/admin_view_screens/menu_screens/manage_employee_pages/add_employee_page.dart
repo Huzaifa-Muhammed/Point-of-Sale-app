@@ -12,11 +12,11 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController contactController = TextEditingController();
-  final TextEditingController positionController = TextEditingController();
   final TextEditingController accessController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
+  String? selectedRole;
   String? nameError;
   String? cityError;
   String? contactError;
@@ -30,7 +30,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       nameError = nameController.text.isEmpty ? 'Field cannot be empty' : null;
       cityError = cityController.text.isEmpty ? 'Field cannot be empty' : null;
       contactError = contactController.text.isEmpty ? 'Field cannot be empty' : null;
-      positionError = positionController.text.isEmpty ? 'Field cannot be empty' : null;
+      positionError = selectedRole == null ? 'Field cannot be empty' : null;
       accessError = accessController.text.isEmpty ? 'Field cannot be empty' : null;
       emailError = emailController.text.isEmpty ? 'Field cannot be empty' : null;
       passwordError = passwordController.text.isEmpty ? 'Field cannot be empty' : null;
@@ -104,10 +104,22 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: positionController,
+                child: DropdownButtonFormField<String>(
+                  value: selectedRole,
+                  items: ['Cashier', 'Manager'].map((role) {
+                    return DropdownMenuItem<String>(
+                      value: role,
+                      child: Text(role),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedRole = value;
+                      positionError = null;
+                    });
+                  },
                   decoration: InputDecoration(
-                    labelText: 'Position',
+                    labelText: 'Role',
                     labelStyle: const TextStyle(
                       fontSize: 16,
                       color: primaryColor, // Replace with your primary color
@@ -178,19 +190,21 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   if (nameError == null && cityError == null && contactError == null && positionError == null && accessError == null && emailError == null && passwordError == null) {
                     setState(() {
                       EmployeeData.employees.add(Employee(
+                        id: Employee.E_ID,
                         name: nameController.text,
                         city: cityController.text,
                         contact: contactController.text,
-                        position: positionController.text,
+                        role: selectedRole!,
                         access: accessController.text,
                         email: emailController.text,
                         password: passwordController.text,
                       ));
+                      Employee.E_ID++;
                     });
                     nameController.clear();
                     cityController.clear();
                     contactController.clear();
-                    positionController.clear();
+                    selectedRole = null;
                     accessController.clear();
                     emailController.clear();
                     passwordController.clear();

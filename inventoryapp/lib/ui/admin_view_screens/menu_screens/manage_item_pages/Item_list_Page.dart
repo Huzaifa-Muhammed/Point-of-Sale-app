@@ -19,7 +19,7 @@ class _ItemListPageState extends State<ItemListPage> {
   void initState() {
     super.initState();
     items = ItemData.items;
-    Timer.periodic(const Duration(seconds: 5), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         items = ItemData.items;
       });
