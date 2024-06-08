@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/data/employee_data.dart';
-
+import '../../../../Model/employee_class.dart';
+import '../../../../sevices/employee_table_helper.dart';
 import 'add_employee_page.dart';
 
 class EmployeeList extends StatefulWidget {
@@ -11,12 +11,17 @@ class EmployeeList extends StatefulWidget {
 }
 
 class _EmployeeListState extends State<EmployeeList> {
+  late List<Employee> _employees;
   late Timer _timer;
+  late EmployeeClassDatabaseHelper _databaseHelper;
+  bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    _databaseHelper = EmployeeClassDatabaseHelper();
     _startTimer();
+    _loadEmployees();
   }
 
   @override
@@ -26,18 +31,22 @@ class _EmployeeListState extends State<EmployeeList> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _updateEmployeeList());
+    _timer = Timer.periodic(const Duration(seconds: 1), (Timer t) => _loadEmployees());
   }
 
-  void _updateEmployeeList() {
+  void _loadEmployees() async {
     setState(() {
-      // Trigger UI update
+      _isLoading = true; // Show loading indicator
+    });
+    _employees = await _databaseHelper.getAllEmployees();
+    setState(() {
+      _isLoading = false; // Hide loading indicator
     });
   }
 
   void _navigateToAddEmployeePage() async {
     await Navigator.push(context, MaterialPageRoute(builder: (context) => AddEmployeePage()));
-    _updateEmployeeList();
+    _loadEmployees();
   }
 
   @override
@@ -47,108 +56,96 @@ class _EmployeeListState extends State<EmployeeList> {
       body: Center(
         child: Column(
           children: [
-            const Center(
-              child: Text(
-                'Your Employees',
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF2C1E5E),
-                ),
-              ),
-            ),
             SizedBox(height: 20),
-            Container(
-              width: 900,
-              color: Colors.white,
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: DataTable(
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Text(
-                        'Name',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blue,
+            Expanded(
+              child: _isLoading
+                  ? Center(child: CircularProgressIndicator()) // Show loading indicator
+                  : Container(
+                width: 900,
+                color: Colors.white,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: DataTable(
+                    columns: const <DataColumn>[
+                      DataColumn(
+                        label: Text(
+                          'Name',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'City',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blue,
+                      DataColumn(
+                        label: Text(
+                          'City',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Contact',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blue,
+                      DataColumn(
+                        label: Text(
+                          'Contact',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Email',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blue,
+                      DataColumn(
+                        label: Text(
+                          'Email',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                    DataColumn(
-                      label: Text(
-                        'Password',
-                        style: TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.blue,
+                      DataColumn(
+                        label: Text(
+                          'Password',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                  rows: EmployeeData.employees.map((employee) {
-                    return DataRow(
-                      cells: [
-                        DataCell(Text(employee.name)),
-                        DataCell(Text(employee.city)),
-                        DataCell(Text(employee.contact)),
-                        DataCell(Text(employee.email)),
-                        DataCell(Text(employee.password)),
-                      ],
-                    );
-                  }).toList(),
+                    ],
+                    rows: _employees.map((employee) {
+                      return DataRow(
+                        cells: [
+                          DataCell(Text(employee.name)),
+                          DataCell(Text(employee.city)),
+                          DataCell(Text(employee.contact)),
+                          DataCell(Text(employee.email)),
+                          DataCell(Text(employee.password)),
+                        ],
+                      );
+                    }).toList(),
+                  ),
                 ),
               ),
             ),
           ],
         ),
       ),
-      floatingActionButton: Tooltip(
-        message: 'Add Employee',
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            shape: RoundedRectangleBorder(),
-            backgroundColor: primaryColor,
-            foregroundColor: Colors.white,
-          ),
-          onPressed: _navigateToAddEmployeePage,
-          child: const Icon(Icons.add),
-        ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToAddEmployeePage,
+        backgroundColor: primaryColor,
+        tooltip: 'Add Employee',
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

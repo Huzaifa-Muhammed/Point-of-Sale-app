@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'dart:io';
-import 'package:inventoryapp/Utils/constants.dart';
 import '../../../../Model/item_class.dart';
-import '../../../../data/item_data.dart';
+import '../../../../Utils/constants.dart';
+import '../../../../sevices/item_table_helper.dart';
 
 class ImportItemsPage extends StatefulWidget {
   @override
@@ -12,8 +12,7 @@ class ImportItemsPage extends StatefulWidget {
 }
 
 class _ImportItemsPageState extends State<ImportItemsPage> {
-  List<Map<String, dynamic>> dataList = [];
-  List<String> headers = [];
+  final ItemClassDatabaseHelper _dbHelper = ItemClassDatabaseHelper(); // Initialize the DatabaseHelper
 
   Future<void> pickAndLoadExcel() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -32,11 +31,6 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
         var sheet = excel.tables[table];
         if (sheet == null) continue;
 
-        // Initialize headers from the first row of the Excel sheet
-        headers = sheet.rows.first
-            .map((cell) => cell?.value?.toString() ?? '')
-            .toList();
-
         for (var row in sheet.rows.skip(1)) {
           Item newItem = Item(
             id: Item.I_ID,
@@ -49,19 +43,13 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
           tempList.add(newItem);
           Item.I_ID++;
 
-          dataList.add({
-            'Name': newItem.name,
-            'Category': newItem.category,
-            'Price': newItem.price,
-            'Margin': newItem.margin,
-            'Quantity': newItem.quantity,
-          });
+          // Store each item to local database
+          await _dbHelper.insertItem(newItem);
         }
       }
 
-      setState(() {
-        ItemData.items.addAll(tempList);
-      });
+      // Refresh UI if needed
+      setState(() {});
     }
   }
 
@@ -76,40 +64,7 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: dataList.isEmpty
-          ? const Center(child: Text('No data loaded.'))
-          : SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: DataTable(
-                  columns: headers.map((header) {
-                    return DataColumn(
-                      label: Text(
-                        header,
-                        style: const TextStyle(
-                          fontStyle: FontStyle.italic,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                  rows: dataList.map((data) {
-                    return DataRow(
-                      cells: headers.map((header) {
-                        return DataCell(
-                          Text(
-                            data[header]?.toString() ?? '', // Convert to string explicitly
-                          ),
-                        );
-                      }).toList(),
-                    );
-                  }).toList(),
-                ),
-              ),
-            ),
+      body: const Center(child: Text('No data loaded.')),
       floatingActionButton: FloatingActionButton(
         onPressed: pickAndLoadExcel,
         child: const Icon(Icons.add),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Model/employee_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/data/employee_data.dart';
+import '../../../../sevices/employee_table_helper.dart';
 
 class AddEmployeePage extends StatefulWidget {
   @override
@@ -25,6 +25,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   String? emailError;
   String? passwordError;
 
+  final EmployeeClassDatabaseHelper databaseHelper = EmployeeClassDatabaseHelper();
+
   void validateFields() {
     setState(() {
       nameError = nameController.text.isEmpty ? 'Field cannot be empty' : null;
@@ -43,7 +45,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       appBar: AppBar(
         foregroundColor: Colors.white,
         title: const Text('Add Employee'),
-        backgroundColor: primaryColor, // Replace with your primary color
+        backgroundColor: primaryColor,
       ),
       body: Center(
         child: SizedBox(
@@ -59,11 +61,12 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'Name',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: nameError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: nameError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color: nameError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -80,7 +83,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: cityError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: cityError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color: cityError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -97,7 +101,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: contactError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: contactError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color:
+                              contactError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -126,7 +132,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: positionError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: positionError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color:
+                              positionError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -143,7 +151,9 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: accessError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: accessError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color:
+                              accessError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -160,7 +170,8 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: emailError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: emailError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color: emailError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                   keyboardType: TextInputType.emailAddress,
@@ -178,45 +189,52 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     ),
                     errorText: passwordError,
                     border: OutlineInputBorder(
-                      borderSide: BorderSide(color: passwordError != null ? Colors.red : Colors.grey),
+                      borderSide: BorderSide(
+                          color:
+                              passwordError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                   keyboardType: TextInputType.visiblePassword,
                 ),
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   validateFields();
                   if (nameError == null && cityError == null && contactError == null && positionError == null && accessError == null && emailError == null && passwordError == null) {
-                    setState(() {
-                      EmployeeData.employees.add(Employee(
-                        id: Employee.E_ID,
-                        name: nameController.text,
-                        city: cityController.text,
-                        contact: contactController.text,
-                        role: selectedRole!,
-                        access: accessController.text,
-                        email: emailController.text,
-                        password: passwordController.text,
-                      ));
-                      Employee.E_ID++;
-                    });
+                    await databaseHelper.insertEmployee(Employee(
+                      id: 0,
+                      name: nameController.text,
+                      city: cityController.text,
+                      contact: contactController.text,
+                      role: selectedRole!,
+                      access: accessController.text,
+                      email: emailController.text,
+                      password: passwordController.text,
+                    ));
                     nameController.clear();
                     cityController.clear();
                     contactController.clear();
-                    selectedRole = null;
-                    accessController.clear();
-                    emailController.clear();
-                    passwordController.clear();
-                    showDialog(context: context, builder: (BuildContext context){
-                      return AlertDialog(
-                        backgroundColor: Colors.green[50],
-                        title: const Text('Employee Added successfully',),
-                        shape: const RoundedRectangleBorder(),
-                        icon: const Icon(Icons.check, size: 20,),
-                        iconColor: Colors.green,
-                      );
+                    setState(() {
+                      selectedRole = null;
+                      accessController.clear();
+                      emailController.clear();
+                      passwordController.clear();
                     });
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          backgroundColor: Colors.green[50],
+                          title: const Text('Employee Added Successfully'),
+                          shape: const RoundedRectangleBorder(),
+                          icon: const Icon(
+                            Icons.check,
+                            size: 20,
+                          ),
+                          iconColor: Colors.green,
+                        );
+                      },
+                    );
                   }
                 },
                 style: ElevatedButton.styleFrom(

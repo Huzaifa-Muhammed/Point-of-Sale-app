@@ -1,32 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:inventoryapp/Utils/constants.dart';
 import '../../../../Model/employee_class.dart';
-import '../../../../data/employee_data.dart';
-import '../../../../Utils/constants.dart';
+import '../../../../sevices/employee_table_helper.dart';
 
 class EmployeeAccessRightsFilterPage extends StatefulWidget {
   final String role;
 
-  const EmployeeAccessRightsFilterPage({Key? key, required this.role}) : super(key: key);
+  const EmployeeAccessRightsFilterPage({Key? key, required this.role})
+      : super(key: key);
 
   @override
-  _EmployeeAccessRightsFilterPageState createState() => _EmployeeAccessRightsFilterPageState();
+  _EmployeeAccessRightsFilterPageState createState() =>
+      _EmployeeAccessRightsFilterPageState();
 }
 
-class _EmployeeAccessRightsFilterPageState extends State<EmployeeAccessRightsFilterPage> {
+class _EmployeeAccessRightsFilterPageState
+    extends State<EmployeeAccessRightsFilterPage> {
   late List<Employee> filteredEmployees;
+  late EmployeeClassDatabaseHelper _databaseHelper;
+  bool _isLoading = true; // Flag to indicate loading state
 
   @override
   void initState() {
     super.initState();
-    filteredEmployees = EmployeeData.employees.where((employee) => employee.role == widget.role).toList();
+    _databaseHelper = EmployeeClassDatabaseHelper();
+    _loadFilteredEmployees();
+  }
+
+  void _loadFilteredEmployees() async {
+    setState(() {
+      _isLoading = true; // Set loading state to true
+    });
+
+    filteredEmployees =
+        await _databaseHelper.getAllEmployeesByRole(widget.role);
     if (filteredEmployees.isEmpty && widget.role == "Owner") {
-      // If no employee is found for Owner role, add a default entry
       filteredEmployees.add(
         Employee(
           id: 0,
           name: 'Admin',
           email: 'admin123@gmail.com',
-          password: '', // Fill with actual default password if needed
+          password: '',
+          // Fill with actual default password if needed
           city: '',
           contact: '311-38-1838173',
           role: 'Owner',
@@ -34,6 +49,10 @@ class _EmployeeAccessRightsFilterPageState extends State<EmployeeAccessRightsFil
         ),
       );
     }
+
+    setState(() {
+      _isLoading = false; // Set loading state to false after data is loaded
+    });
   }
 
   @override
@@ -44,41 +63,48 @@ class _EmployeeAccessRightsFilterPageState extends State<EmployeeAccessRightsFil
         foregroundColor: Colors.white,
         title: Text('Employees - ${widget.role}'),
       ),
-      body: SizedBox(
-        width: 600,
-        child: ListView.separated(
-          padding: EdgeInsets.all(16.0),
-          itemCount: filteredEmployees.length,
-          separatorBuilder: (context, index) => SizedBox(height: 10),
-          itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 1,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: ListTile(
-                title: Text(
-                  filteredEmployees[index].name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text('Email :  ${filteredEmployees[index].email}'),
-                trailing: Text('Contact :  ${filteredEmployees[index].contact}'),
-                onTap: () {
-                  // Add onTap logic here
+      body: _isLoading
+          ? Center(
+              child:
+                  CircularProgressIndicator(), // Show circular progress indicator while loading
+            )
+          : SizedBox(
+              width: 600,
+              child: ListView.separated(
+                padding: EdgeInsets.all(16.0),
+                itemCount: filteredEmployees.length,
+                separatorBuilder: (context, index) => SizedBox(height: 10),
+                itemBuilder: (context, index) {
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      title: Text(
+                        filteredEmployees[index].name,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle:
+                          Text('Email :  ${filteredEmployees[index].email}'),
+                      trailing: Text(
+                          'Contact :  ${filteredEmployees[index].contact}'),
+                      onTap: () {
+                        // Add onTap logic here
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
-        ),
-      ),
+            ),
     );
   }
 }

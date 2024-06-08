@@ -8,7 +8,7 @@ class Employee {
   final String email;
   final String password;
 
-  static int E_ID=1;
+  static int E_ID = 1;
 
   Employee({
     required this.id,
@@ -20,4 +20,30 @@ class Employee {
     required this.role,
     required this.access,
   });
+
+  factory Employee.fromMap(Map<String, dynamic> map) {
+    return Employee(
+      id: map['id'],
+      name: map['name'],
+      email: map['email'],
+      password: map['password'],
+      city: map['city'],
+      contact: map['contact'],
+      role: map['role'],
+      access: map['access'],
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'email': email,
+      'password': password,
+      'city': city,
+      'contact': contact,
+      'role': role,
+      'access': access,
+    };
+  }
 }

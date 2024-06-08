@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_employee_pages/employee_access_right_filter.dart';
-import '../../../../data/employee_data.dart';
+
+import '../../../../Model/employee_class.dart';
+import '../../../../sevices/employee_table_helper.dart';
 
 class EmployeeAccessRightsPage extends StatefulWidget {
   @override
@@ -9,31 +11,27 @@ class EmployeeAccessRightsPage extends StatefulWidget {
 }
 
 class _EmployeeAccessRightsPageState extends State<EmployeeAccessRightsPage> {
-  // Placeholder data
   final List<String> employeeRoles = ['Owner', 'Manager', 'Cashier'];
   final List<String> accessList = ['Full', 'Limited', 'Basic']; // Access for each role
-
-  // Store checkbox state
-  List<bool> isChecked = [true, false, true];
+  late List<bool> isChecked;
   late List<int> employeeCounts; // Count of each role
+  late EmployeeClassDatabaseHelper _databaseHelper;
 
   @override
   void initState() {
     super.initState();
+    _databaseHelper = EmployeeClassDatabaseHelper();
     isChecked = List<bool>.filled(employeeRoles.length, false);
     employeeCounts = List<int>.filled(employeeRoles.length, 0);
-    _calculateEmployeeCounts();
+    _loadEmployeeData();
   }
 
-  // Function to calculate employee counts for each role
-  void _calculateEmployeeCounts() {
+  void _loadEmployeeData() async {
+    List<Employee> employees = await _databaseHelper.getAllEmployees();
     for (int i = 0; i < employeeRoles.length; i++) {
-      if (employeeRoles[i] == 'Owner') {
-        employeeCounts[i] = 1; // For 'Owner', set count to 1
-      } else {
-        employeeCounts[i] = EmployeeData.employees.where((employee) => employee.role == employeeRoles[i]).length;
-      }
+      employeeCounts[i] = employees.where((employee) => employee.role == employeeRoles[i]).length;
     }
+    setState(() {});
   }
 
   @override
