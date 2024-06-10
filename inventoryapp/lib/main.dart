@@ -1,11 +1,20 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/UI/splash_screen.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
 
-void main() async{
-  sqfliteFfiInit();
-  databaseFactory = databaseFactoryFfi;
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  if (kIsWeb) {
+    databaseFactory = databaseFactoryFfiWeb;
+  } else {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
+
   runApp(const MyApp());
 }
 
@@ -24,4 +33,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
