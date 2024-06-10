@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items.dart';
 import '../../../../Utils/constants.dart';
+import 'add_items.dart';
 import 'import_items.dart';
 
 class AddItem extends StatefulWidget {

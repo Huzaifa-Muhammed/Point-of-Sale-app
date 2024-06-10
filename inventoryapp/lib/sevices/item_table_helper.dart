@@ -50,4 +50,13 @@ class ItemClassDatabaseHelper {
     List<Item> itemList = items.isNotEmpty ? items.map((c) => Item.fromMap(c)).toList() : [];
     return itemList;
   }
+
+  Future<void> deleteItem(int id) async {
+    final db = await database;
+    await db.delete(
+      'items', // Table name
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
 }

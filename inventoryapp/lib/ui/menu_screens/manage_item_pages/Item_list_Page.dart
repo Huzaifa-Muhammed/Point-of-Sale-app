@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/Model/item_class.dart';
 import 'dart:async';
 import '../../../../sevices/item_table_helper.dart';
+import 'add_items_page.dart';
 
 class ItemListPage extends StatefulWidget {
   @override
@@ -31,6 +31,11 @@ class _ItemListPageState extends State<ItemListPage> {
     });
   }
 
+  Future<void> deleteItem(int id) async {
+    await _dbHelper.deleteItem(id);
+    fetchItemsFromDatabase();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,11 +57,13 @@ class _ItemListPageState extends State<ItemListPage> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.category_outlined, size: 100, color: primaryColor),
+                          const Icon(Icons.category_outlined,
+                              size: 100, color: primaryColor),
                           const SizedBox(height: 20),
                           Text(
                             "You didn't add any item to your app's inventory",
-                            style: GoogleFonts.aBeeZee(fontSize: 16, color: Colors.black),
+                            style: GoogleFonts.aBeeZee(
+                                fontSize: 16, color: Colors.black),
                             textAlign: TextAlign.center,
                           ),
                           const SizedBox(height: 20),
@@ -68,14 +75,17 @@ class _ItemListPageState extends State<ItemListPage> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (BuildContext context) => AddItem(showAppBar: true),
+                                      builder: (BuildContext context) =>
+                                          AddItem(showAppBar: true),
                                     ),
                                   );
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: primaryColor,
-                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                                  shape: const RoundedRectangleBorder(),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 10),
+                                  shape:
+                                  const RoundedRectangleBorder(),
                                 ),
                                 child: Text(
                                   "Add Items",
@@ -106,7 +116,10 @@ class _ItemListPageState extends State<ItemListPage> {
                     children: [
                       Text(
                         'Item List',
-                        style: GoogleFonts.aBeeZee(fontSize: 20, fontWeight: FontWeight.bold, color: primaryColor),
+                        style: GoogleFonts.aBeeZee(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: primaryColor),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 20),
@@ -118,6 +131,7 @@ class _ItemListPageState extends State<ItemListPage> {
                           2: FixedColumnWidth(100),
                           3: FixedColumnWidth(100),
                           4: FixedColumnWidth(100),
+                          5: FixedColumnWidth(100), // New column for delete button
                         },
                         children: [
                           const TableRow(
@@ -130,7 +144,9 @@ class _ItemListPageState extends State<ItemListPage> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Name',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -139,7 +155,9 @@ class _ItemListPageState extends State<ItemListPage> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Category',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -148,7 +166,9 @@ class _ItemListPageState extends State<ItemListPage> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Price',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -157,7 +177,9 @@ class _ItemListPageState extends State<ItemListPage> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Margin',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -166,7 +188,20 @@ class _ItemListPageState extends State<ItemListPage> {
                                   padding: EdgeInsets.all(8.0),
                                   child: Text(
                                     'Quantity',
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ),
+                              Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ),
                               ),
@@ -203,6 +238,17 @@ class _ItemListPageState extends State<ItemListPage> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(8.0),
                                     child: Text(item.quantity.toString()),
+                                  ),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      icon: Icon(Icons.delete, color: Colors.red),
+                                      onPressed: () {
+                                        deleteItem(item.id);
+                                      },
+                                    ),
                                   ),
                                 ),
                               ],

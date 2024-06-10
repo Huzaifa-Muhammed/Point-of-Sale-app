@@ -12,7 +12,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   final TextEditingController nameController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController contactController = TextEditingController();
-  final TextEditingController accessController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -21,7 +20,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
   String? cityError;
   String? contactError;
   String? positionError;
-  String? accessError;
   String? emailError;
   String? passwordError;
 
@@ -33,7 +31,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
       cityError = cityController.text.isEmpty ? 'Field cannot be empty' : null;
       contactError = contactController.text.isEmpty ? 'Field cannot be empty' : null;
       positionError = selectedRole == null ? 'Field cannot be empty' : null;
-      accessError = accessController.text.isEmpty ? 'Field cannot be empty' : null;
       emailError = emailController.text.isEmpty ? 'Field cannot be empty' : null;
       passwordError = passwordController.text.isEmpty ? 'Field cannot be empty' : null;
     });
@@ -102,8 +99,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     errorText: contactError,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color:
-                              contactError != null ? Colors.red : Colors.grey),
+                          color: contactError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -133,27 +129,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     errorText: positionError,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color:
-                              positionError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: accessController,
-                  decoration: InputDecoration(
-                    labelText: 'Access',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
-                    ),
-                    errorText: accessError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color:
-                              accessError != null ? Colors.red : Colors.grey),
+                          color: positionError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                 ),
@@ -190,8 +166,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     errorText: passwordError,
                     border: OutlineInputBorder(
                       borderSide: BorderSide(
-                          color:
-                              passwordError != null ? Colors.red : Colors.grey),
+                          color: passwordError != null ? Colors.red : Colors.grey),
                     ),
                   ),
                   keyboardType: TextInputType.visiblePassword,
@@ -200,14 +175,15 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               ElevatedButton(
                 onPressed: () async {
                   validateFields();
-                  if (nameError == null && cityError == null && contactError == null && positionError == null && accessError == null && emailError == null && passwordError == null) {
+                  if (nameError == null && cityError == null && contactError == null && positionError == null && emailError == null && passwordError == null) {
+                    String access = selectedRole == 'Manager' ? 'full' : 'partial';
                     await databaseHelper.insertEmployee(Employee(
-                      id: 0,
+                      id: Employee.E_ID,
                       name: nameController.text,
                       city: cityController.text,
                       contact: contactController.text,
                       role: selectedRole!,
-                      access: accessController.text,
+                      access: access,
                       email: emailController.text,
                       password: passwordController.text,
                     ));
@@ -216,7 +192,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     contactController.clear();
                     setState(() {
                       selectedRole = null;
-                      accessController.clear();
                       emailController.clear();
                       passwordController.clear();
                     });
@@ -236,6 +211,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                       },
                     );
                   }
+                  Employee.E_ID++;
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(),

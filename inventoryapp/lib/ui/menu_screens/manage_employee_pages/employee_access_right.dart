@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_employee_pages/employee_access_right_filter.dart';
-
 import '../../../../Model/employee_class.dart';
 import '../../../../sevices/employee_table_helper.dart';
+import 'employee_access_right_filter.dart';
 
 class EmployeeAccessRightsPage extends StatefulWidget {
   @override

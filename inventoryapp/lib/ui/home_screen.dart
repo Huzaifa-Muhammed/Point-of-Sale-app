@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/aboutUs_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/dashboard_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/favorite_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_customer_pages/customer_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_employee_pages/employee_point_of_sale.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/discount_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/Item_list_Page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/profile_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/settings_page.dart';
 import '../Utils/image_paths.dart';
 import '../assets/widgets/sidebar.dart';
-import 'admin_view_screens/menu_screens/manage_employee_pages/employee_access_right.dart';
-import 'admin_view_screens/menu_screens/manage_employee_pages/employee_list_page.dart';
+import 'menu_screens/aboutUs_page.dart';
+import 'menu_screens/dashboard_page.dart';
+import 'menu_screens/discount_page.dart';
+import 'menu_screens/favorite_page.dart';
+import 'menu_screens/manage_customer_pages/customer_page.dart';
+import 'menu_screens/manage_employee_pages/employee_access_right.dart';
+import 'menu_screens/manage_employee_pages/employee_list_page.dart';
+import 'menu_screens/manage_employee_pages/employee_point_of_sale.dart';
+import 'menu_screens/manage_item_pages/Item_list_Page.dart';
+import 'menu_screens/manage_item_pages/add_items_page.dart';
+import 'menu_screens/profile_page.dart';
+import 'menu_screens/settings_page.dart';
 
 class HomeScreen extends StatefulWidget {
   @override

@@ -2,10 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inventoryapp/data/customer_data.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_customer_pages/import_customers.dart';
 import '../../../../Model/customer_class.dart';
 import '../../../../Utils/constants.dart';
 import 'add_customer_page.dart';
+import 'import_customers.dart';
 
 class CustomerPage extends StatefulWidget {
   @override

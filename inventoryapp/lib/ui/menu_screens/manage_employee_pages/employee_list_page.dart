@@ -49,6 +49,11 @@ class _EmployeeListState extends State<EmployeeList> {
     _loadEmployees();
   }
 
+  Future<void> _deleteEmployee(int id) async {
+    await _databaseHelper.deleteEmployee(id);
+    _loadEmployees();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,6 +127,17 @@ class _EmployeeListState extends State<EmployeeList> {
                           ),
                         ),
                       ),
+                      DataColumn(
+                        label: Text(
+                          'Delete',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20,
+                            color: Colors.blue,
+                          ),
+                        ),
+                      ),
                     ],
                     rows: _employees.map((employee) {
                       return DataRow(
@@ -131,6 +147,14 @@ class _EmployeeListState extends State<EmployeeList> {
                           DataCell(Text(employee.contact)),
                           DataCell(Text(employee.email)),
                           DataCell(Text(employee.password)),
+                          DataCell(
+                            IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                _deleteEmployee(employee.id);
+                              },
+                            ),
+                          ),
                         ],
                       );
                     }).toList(),

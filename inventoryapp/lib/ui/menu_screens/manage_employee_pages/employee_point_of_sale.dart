@@ -4,10 +4,6 @@ import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:inventoryapp/data/item_data.dart';
 import 'package:inventoryapp/data/sold_items_data.dart';
 import 'package:inventoryapp/ui/auth_screens/login_screen.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/dashboard_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/add_items_page.dart';
-import 'package:inventoryapp/ui/admin_view_screens/menu_screens/manage_item_pages/import_items.dart';
 import 'package:inventoryapp/assets/widgets/custom_drawer.dart';
 import 'package:inventoryapp/utils/constants.dart';
 import '../../../../Model/item_class.dart';
@@ -17,6 +13,10 @@ import '../../../../assets/widgets/POS_widgets/pos_cart.dart';
 import '../../../../assets/widgets/POS_widgets/search_bar.dart';
 import '../../../../assets/widgets/POS_widgets/sub_total.dart';
 import '../../../../sevices/item_table_helper.dart';
+import '../dashboard_page.dart';
+import '../manage_item_pages/add_items.dart';
+import '../manage_item_pages/add_items_page.dart';
+import '../manage_item_pages/import_items.dart';
 
 class PointofSalePage extends StatefulWidget {
   final bool showAppBar;
