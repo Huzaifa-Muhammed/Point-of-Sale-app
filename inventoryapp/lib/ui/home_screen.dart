@@ -24,30 +24,34 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   Images images = Images();
+  bool visible = true;
+  int _cartSelectedIndex = 0;
+  int _employeeSelectedIndex = 0;
 
-  int _cartSelectedIndex=0;
-  int _employeeSelectedIndex=0;
   @override
   Widget build(BuildContext context) {
     final List<Widget> pages = [
       ProfilePage(),
       DashboardPage(false),
       FavoritePage(),
-      PointofSalePage(false,eRole: ""),
+      PointofSalePage(false, eRole: ""),
       EmployeeAccessRightsPage(),
       CustomerPage(),
       SettingsPage(),
       AboutUsPage(),
     ];
-    final List<Widget> cartPages=[
-      AddItem(showAppBar: false,),
+
+    final List<Widget> cartPages = [
+      AddItem(showAppBar: false),
       ItemListPage(),
       DiscountPage(),
     ];
-    final List<Widget> employeePages=[
+
+    final List<Widget> employeePages = [
       EmployeeList(),
       EmployeeAccessRightsPage(),
     ];
+
     bool isMobile = MediaQuery.of(context).size.width < 600;
 
     return Scaffold(
@@ -56,7 +60,14 @@ class _HomeScreenState extends State<HomeScreen> {
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 20,
         backgroundColor: primaryColor,
-        title: Text('Sales Summary', style: GoogleFonts.aBeeZee(color: Colors.white, letterSpacing: 2, wordSpacing: 10,),),
+        title: Text(
+          'Sales Summary',
+          style: GoogleFonts.aBeeZee(
+            color: Colors.white,
+            letterSpacing: 2,
+            wordSpacing: 10,
+          ),
+        ),
       ),
       body: Stack(
         children: [
@@ -70,6 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     onTabChange: (index) {
                       setState(() {
                         _selectedIndex = index;
+                        visible = true;
                       });
                     },
                   ),
@@ -91,10 +103,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           Positioned(
-            top: _selectedIndex==2?130:260,
-            left: MediaQuery.of(context).size.width*0.25,
+            top: _selectedIndex == 2 ? 130 : 260,
+            left: MediaQuery.of(context).size.width * 0.25,
             child: Visibility(
-              visible: _selectedIndex == 2 || _selectedIndex == 4,
+              visible: (_selectedIndex == 2 || _selectedIndex == 4) && visible,
               child: Container(
                 width: 150,
                 color: Colors.grey.shade200,
@@ -105,29 +117,49 @@ class _HomeScreenState extends State<HomeScreen> {
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _selectedIndex==2?_cartSelectedIndex=0:_employeeSelectedIndex=0;
+                          if (_selectedIndex == 2) {
+                            _cartSelectedIndex = 0;
+                          } else {
+                            _employeeSelectedIndex = 0;
+                          }
+                          visible = false;
                         });
                       },
-                      style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150),),
-                      child: _selectedIndex==4?const Text('Employee List'):const Text('Add Items'),
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(),
+                        fixedSize: const Size.fromWidth(150),
+                      ),
+                      child: Text(_selectedIndex == 4 ? 'Employee List' : 'Add Items'),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _selectedIndex==2?_cartSelectedIndex=1:_employeeSelectedIndex=1;
+                          if (_selectedIndex == 2) {
+                            _cartSelectedIndex = 1;
+                          } else {
+                            _employeeSelectedIndex = 1;
+                          }
+                          visible = false;
                         });
                       },
-                      style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150)),
-                      child: _selectedIndex==4?const Text('Access Right'):const Text('Items List'),
+                      style: ElevatedButton.styleFrom(
+                        shape: const RoundedRectangleBorder(),
+                        fixedSize: const Size.fromWidth(150),
+                      ),
+                      child: Text(_selectedIndex == 4 ? 'Access Right' : 'Items List'),
                     ),
-                    if(_selectedIndex==2)
+                    if (_selectedIndex == 2)
                       ElevatedButton(
                         onPressed: () {
                           setState(() {
-                            _cartSelectedIndex=2;
+                            _cartSelectedIndex = 2;
+                            visible = false;
                           });
                         },
-                        style: ElevatedButton.styleFrom(shape: const RoundedRectangleBorder(),fixedSize: const Size.fromWidth(150)),
+                        style: ElevatedButton.styleFrom(
+                          shape: const RoundedRectangleBorder(),
+                          fixedSize: const Size.fromWidth(150),
+                        ),
                         child: const Text('Discount'),
                       ),
                   ],
