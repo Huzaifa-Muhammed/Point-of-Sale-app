@@ -4,7 +4,7 @@ import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/Model/item_class.dart';
 import 'dart:async';
 import '../../../../sevices/item_table_helper.dart';
-import 'add_items_page.dart';
+import 'add_items.dart';
 
 class ItemListPage extends StatefulWidget {
   @override
@@ -25,7 +25,7 @@ class _ItemListPageState extends State<ItemListPage> {
   }
 
   Future<void> fetchItemsFromDatabase() async {
-    List<Item> fetchedItems = await _dbHelper.getItems();
+    List<Item> fetchedItems = await _dbHelper.getAllItems();
     setState(() {
       items = fetchedItems;
     });
@@ -76,7 +76,7 @@ class _ItemListPageState extends State<ItemListPage> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          AddItem(showAppBar: true),
+                                          AddItemPage(),
                                     ),
                                   );
                                 },
@@ -246,7 +246,7 @@ class _ItemListPageState extends State<ItemListPage> {
                                     child: IconButton(
                                       icon: Icon(Icons.delete, color: Colors.red),
                                       onPressed: () {
-                                        deleteItem(item.id);
+                                        deleteItem(item.id!);
                                       },
                                     ),
                                   ),

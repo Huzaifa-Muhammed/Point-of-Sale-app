@@ -151,7 +151,7 @@ class _EmployeeListState extends State<EmployeeList> {
                             IconButton(
                               icon: Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
-                                _deleteEmployee(employee.id);
+                                _deleteEmployee(employee.id!);
                               },
                             ),
                           ),

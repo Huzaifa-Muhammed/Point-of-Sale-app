@@ -5,6 +5,15 @@ import '../Model/employee_class.dart';
 class EmployeeClassDatabaseHelper {
   late Database _database;
 
+  // Singleton pattern to ensure only one instance of the database helper exists
+  static final EmployeeClassDatabaseHelper _instance =
+  EmployeeClassDatabaseHelper._internal();
+
+  factory EmployeeClassDatabaseHelper() => _instance;
+
+  EmployeeClassDatabaseHelper._internal();
+
+  // Method to initialize the database
   Future<void> initializeDatabase() async {
     final String path = await getDatabasesPath();
     final String databasePath = join(path, 'employees.db');
@@ -13,22 +22,33 @@ class EmployeeClassDatabaseHelper {
     _database = await openDatabase(
       databasePath,
       version: 1,
-      onCreate: (db, version) {
-        // Create the employees table
-        return db.execute(
-          'CREATE TABLE employees(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, email TEXT, password TEXT, city TEXT, contact TEXT, role TEXT, access TEXT)',
-        );
-      },
+      onCreate: _createDatabase,
     );
   }
 
-  // Insert an employee into the database
+  // Method to create the database tables
+  Future<void> _createDatabase(Database db, int version) async {
+    await db.execute('''
+      CREATE TABLE employees(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        email TEXT,
+        password TEXT,
+        city TEXT,
+        contact TEXT,
+        role TEXT,
+        access TEXT
+      )
+    ''');
+  }
+
+  // Method to insert an employee into the database
   Future<int> insertEmployee(Employee employee) async {
     await initializeDatabase();
     return await _database.insert('employees', employee.toMap());
   }
 
-  // Retrieve all employees from the database
+  // Method to retrieve all employees from the database
   Future<List<Employee>> getAllEmployees() async {
     await initializeDatabase();
     final List<Map<String, dynamic>> maps = await _database.query('employees');
@@ -37,16 +57,20 @@ class EmployeeClassDatabaseHelper {
     });
   }
 
-  // Retrieve employees by role from the database
-  Future<List<Employee>> getAllEmployeesByRole(String role) async {
+  // Method to retrieve employees by role from the database
+  Future<List<Employee>> getEmployeesByRole(String role) async {
     await initializeDatabase();
-    final List<Map<String, dynamic>> maps = await _database.query('employees', where: 'role = ?', whereArgs: [role]);
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'employees',
+      where: 'role = ?',
+      whereArgs: [role],
+    );
     return List.generate(maps.length, (i) {
       return Employee.fromMap(maps[i]);
     });
   }
 
-  // Update an employee in the database
+  // Method to update an employee in the database
   Future<int> updateEmployee(Employee employee) async {
     await initializeDatabase();
     return await _database.update(
@@ -57,7 +81,7 @@ class EmployeeClassDatabaseHelper {
     );
   }
 
-  // Delete an employee from the database
+  // Method to delete an employee from the database
   Future<int> deleteEmployee(int id) async {
     await initializeDatabase();
     return await _database.delete(

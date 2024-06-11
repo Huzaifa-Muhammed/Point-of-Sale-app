@@ -33,11 +33,10 @@ class _EmployeeAccessRightsFilterPageState
     });
 
     filteredEmployees =
-        await _databaseHelper.getAllEmployeesByRole(widget.role);
+    await _databaseHelper.getEmployeesByRole(widget.role);
     if (filteredEmployees.isEmpty && widget.role == "Owner") {
       filteredEmployees.add(
         Employee(
-          id: 0,
           name: 'Admin',
           email: 'admin123@gmail.com',
           password: '',
@@ -65,46 +64,45 @@ class _EmployeeAccessRightsFilterPageState
       ),
       body: _isLoading
           ? Center(
-              child:
-                  CircularProgressIndicator(), // Show circular progress indicator while loading
-            )
+        child: CircularProgressIndicator(), // Show circular progress indicator while loading
+      )
           : SizedBox(
-              width: 600,
-              child: ListView.separated(
-                padding: EdgeInsets.all(16.0),
-                itemCount: filteredEmployees.length,
-                separatorBuilder: (context, index) => SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  return Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 1,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: ListTile(
-                      title: Text(
-                        filteredEmployees[index].name,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                      subtitle:
-                          Text('Email :  ${filteredEmployees[index].email}'),
-                      trailing: Text(
-                          'Contact :  ${filteredEmployees[index].contact}'),
-                      onTap: () {
-                        // Add onTap logic here
-                      },
-                    ),
-                  );
+        width: 600,
+        child: ListView.separated(
+          padding: EdgeInsets.all(16.0),
+          itemCount: filteredEmployees.length,
+          separatorBuilder: (context, index) => SizedBox(height: 10),
+          itemBuilder: (context, index) {
+            return Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: ListTile(
+                title: Text(
+                  filteredEmployees[index].name,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                subtitle:
+                Text('Email :  ${filteredEmployees[index].email}'),
+                trailing:
+                Text('Contact :  ${filteredEmployees[index].contact}'),
+                onTap: () {
+                  // Add onTap logic here
                 },
               ),
-            ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

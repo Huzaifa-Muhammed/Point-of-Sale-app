@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:inventoryapp/data/customer_data.dart';
 import '../../../../Model/customer_class.dart';
 import '../../../../Utils/constants.dart';
 import 'add_customer_page.dart';
 import 'import_customers.dart';
+import '../../../sevices/customer_table_helper.dart';
 
 class CustomerPage extends StatefulWidget {
   @override
@@ -13,18 +13,25 @@ class CustomerPage extends StatefulWidget {
 }
 
 class _CustomerPageState extends State<CustomerPage> {
-
-  List<Customer> customers =[];
+  List<Customer> customers = [];
+  final CustomerClassDatabaseHelper dbHelper = CustomerClassDatabaseHelper();
 
   @override
   void initState() {
     super.initState();
-    customers = CustomerData.customers;
-    Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        customers = CustomerData.customers;
-      });
+    _refreshCustomerList();
+  }
+
+  Future<void> _refreshCustomerList() async {
+    List<Customer> fetchedCustomers = await dbHelper.getCustomers();
+    setState(() {
+      customers = fetchedCustomers;
     });
+  }
+
+  Future<void> _deleteCustomer(int id) async {
+    await dbHelper.deleteCustomer(id);
+    _refreshCustomerList();
   }
 
   @override
@@ -71,9 +78,8 @@ class _CustomerPageState extends State<CustomerPage> {
                               ),
                             );
                             if (newCustomer != null) {
-                              setState(() {
-                               CustomerData.customers.add(newCustomer);
-                              });
+                              await dbHelper.insertCustomer(newCustomer);
+                              _refreshCustomerList();
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -94,8 +100,15 @@ class _CustomerPageState extends State<CustomerPage> {
                         ),
                         const SizedBox(width: 10),
                         ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context)=>ImportCustomer()));
+                          onPressed: () async {
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ImportCustomer(),
+                              ),
+                            );
+                            _refreshCustomerList();
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: primaryColor,
@@ -133,39 +146,41 @@ class _CustomerPageState extends State<CustomerPage> {
                               6: FixedColumnWidth(100),
                               7: FixedColumnWidth(100),
                               8: FixedColumnWidth(100),
+                              9: FixedColumnWidth(100), // Added for delete button
                             },
                             children: [
-                              const TableRow(
+                              TableRow(
                                 decoration: BoxDecoration(
                                   color: primaryColor,
                                 ),
                                 children: [
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Name', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Email', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Phone', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('City', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Region', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Postal Code', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Country', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Customer Code', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
-                                  Center(child: Padding(padding: EdgeInsets.all(8.0), child: Text('Note', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),),),
+                                  _buildHeaderCell('Name'),
+                                  _buildHeaderCell('Email'),
+                                  _buildHeaderCell('Phone'),
+                                  _buildHeaderCell('City'),
+                                  _buildHeaderCell('Region'),
+                                  _buildHeaderCell('Postal Code'),
+                                  _buildHeaderCell('Country'),
+                                  _buildHeaderCell('Customer Code'),
+                                  _buildHeaderCell('Note'),
+                                  _buildHeaderCell('Delete'),
                                 ],
                               ),
-                              ...CustomerData.customers.map((customer) {
-                                return TableRow(
+                              for (var customer in customers)
+                                TableRow(
                                   children: [
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.name ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.email ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.phone ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.city ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.region ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.postalCode ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.country ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.customerCode ?? ''))),
-                                    Center(child: Padding(padding: const EdgeInsets.all(8.0), child: Text(customer.note ?? ''))),
+                                    _buildCell(customer.name ?? ''),
+                                    _buildCell(customer.email ?? ''),
+                                    _buildCell(customer.phone ?? ''),
+                                    _buildCell(customer.city ?? ''),
+                                    _buildCell(customer.region ?? ''),
+                                    _buildCell(customer.postalCode ?? ''),
+                                    _buildCell(customer.country ?? ''),
+                                    _buildCell(customer.customerCode ?? ''),
+                                    _buildCell(customer.note ?? ''),
+                                    _buildDeleteButton(customer.id??0),
                                   ],
-                                );
-                              }).toList(),
+                                ),
                             ],
                           ),
                         ),
@@ -176,6 +191,41 @@ class _CustomerPageState extends State<CustomerPage> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderCell(String text) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          text,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCell(String text) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(text),
+      ),
+    );
+  }
+
+  Widget _buildDeleteButton(int id) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: IconButton(
+          icon: Icon(Icons.delete, color: Colors.red),
+          onPressed: () {
+            _deleteCustomer(id);
+          },
         ),
       ),
     );

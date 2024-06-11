@@ -1,60 +1,59 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
-import '../../../../Model/item_class.dart';
+import 'dart:async';
+import '../Model/item_class.dart';
 
 class ItemClassDatabaseHelper {
-  static final ItemClassDatabaseHelper _instance = ItemClassDatabaseHelper._internal();
-  factory ItemClassDatabaseHelper() => _instance;
-  static Database? _database;
+  late Database _database;
 
-  ItemClassDatabaseHelper._internal();
+  Future<void> initializeDatabase() async {
+    final String path = await getDatabasesPath();
+    final String databasePath = join(path, 'items.db');
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-    _database = await _initDatabase();
-    return _database!;
-  }
-
-  Future<Database> _initDatabase() async {
-    String path = join(await getDatabasesPath(), 'inventory.db');
-    return await databaseFactoryFfi.openDatabase(
-      path,
-      options: OpenDatabaseOptions(
-        version: 1,
-        onCreate: _onCreate,
-      ),
+    // Open the database or create if it doesn't exist
+    _database = await openDatabase(
+      databasePath,
+      version: 1,
+      onCreate: (db, version) {
+        // Create the items table
+        return db.execute(
+          'CREATE TABLE items(id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT, category TEXT, price TEXT, margin TEXT, quantity TEXT)',
+        );
+      },
     );
   }
 
-  Future _onCreate(Database db, int version) async {
-    await db.execute('''
-      CREATE TABLE items(
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
-        category TEXT,
-        price TEXT,
-        margin TEXT,
-        quantity TEXT
-      )
-    ''');
-  }
-
   Future<int> insertItem(Item item) async {
-    Database db = await database;
-    return await db.insert('items', item.toMap());
+    await initializeDatabase();
+    return await _database.insert('items', item.toMap(),
+        conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  Future<List<Item>> getItems() async {
-    Database db = await database;
-    var items = await db.query('items', orderBy: 'id');
-    List<Item> itemList = items.isNotEmpty ? items.map((c) => Item.fromMap(c)).toList() : [];
-    return itemList;
+  // Retrieve all items from the database
+  Future<List<Item>> getAllItems() async {
+    await initializeDatabase();
+    final List<Map<String, dynamic>> maps = await _database.query('items');
+    return List.generate(maps.length, (i) {
+      return Item.fromMap(maps[i]);
+    });
   }
 
-  Future<void> deleteItem(int id) async {
-    final db = await database;
-    await db.delete(
-      'items', // Table name
+  // Update an item in the database
+  Future<int> updateItem(Item item) async {
+    await initializeDatabase();
+    return await _database.update(
+      'items',
+      item.toMap(),
+      where: 'id = ?',
+      whereArgs: [item.id],
+    );
+  }
+
+  // Delete an item from the database
+  Future<int> deleteItem(int id) async {
+    await initializeDatabase();
+    return await _database.delete(
+      'items',
       where: 'id = ?',
       whereArgs: [id],
     );

@@ -76,7 +76,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'City',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: cityError,
                     border: OutlineInputBorder(
@@ -94,7 +94,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'Contact',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: contactError,
                     border: OutlineInputBorder(
@@ -124,7 +124,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'Role',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: positionError,
                     border: OutlineInputBorder(
@@ -142,7 +142,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'Email',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: emailError,
                     border: OutlineInputBorder(
@@ -161,7 +161,7 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                     labelText: 'Password',
                     labelStyle: const TextStyle(
                       fontSize: 16,
-                      color: primaryColor, // Replace with your primary color
+                      color: primaryColor,
                     ),
                     errorText: passwordError,
                     border: OutlineInputBorder(
@@ -175,10 +175,14 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
               ElevatedButton(
                 onPressed: () async {
                   validateFields();
-                  if (nameError == null && cityError == null && contactError == null && positionError == null && emailError == null && passwordError == null) {
+                  if (nameError == null &&
+                      cityError == null &&
+                      contactError == null &&
+                      positionError == null &&
+                      emailError == null &&
+                      passwordError == null) {
                     String access = selectedRole == 'Manager' ? 'full' : 'partial';
                     await databaseHelper.insertEmployee(Employee(
-                      id: Employee.E_ID,
                       name: nameController.text,
                       city: cityController.text,
                       contact: contactController.text,
@@ -211,7 +215,6 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                       },
                     );
                   }
-                  Employee.E_ID++;
                 },
                 style: ElevatedButton.styleFrom(
                   shape: const RoundedRectangleBorder(),

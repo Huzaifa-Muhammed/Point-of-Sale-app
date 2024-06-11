@@ -48,7 +48,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   Future<void> _loadItemsFromDatabase() async {
-    List<Item> items = await ItemClassDatabaseHelper().getItems();
+    List<Item> items = await ItemClassDatabaseHelper().getAllItems();
     setState(() {
       ItemData.items = items;
       filteredItems = items;
@@ -233,7 +233,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
                       "#ff6666", "Cancel", true, ScanMode.BARCODE);
                   if (barcodeScanRes != '-1') {
                     var item = Item(
-                      id: Item.I_ID++,
+                      id: null,
                       name: 'Sample Item',
                       category: 'Sample Category',
                       price: '10.00',

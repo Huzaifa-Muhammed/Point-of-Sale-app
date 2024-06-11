@@ -46,7 +46,6 @@ class _AddItemPageState extends State<AddItemPage> {
     validateFields();
     if (nameError == null && categoryError == null && marginError == null && quantityError == null && priceError == null) {
       Item newItem = Item(
-        id: Item.I_ID,
         name: nameController.text,
         category: categoryController.text,
         margin: marginController.text,
@@ -57,7 +56,6 @@ class _AddItemPageState extends State<AddItemPage> {
       try {
         int result = await _dbHelper.insertItem(newItem);
         if (result > 0) {
-          Item.I_ID++;
           clearFields();
           showDialog(
             context: context,

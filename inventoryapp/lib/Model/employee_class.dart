@@ -1,5 +1,5 @@
 class Employee {
-  int id;
+  int? id;
   final String name;
   final String city;
   final String contact;
@@ -8,10 +8,8 @@ class Employee {
   final String email;
   final String password;
 
-  static int E_ID = 1;
-
   Employee({
-    required this.id,
+    this.id,
     required this.name,
     required this.email,
     required this.password,

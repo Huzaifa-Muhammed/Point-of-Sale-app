@@ -3,8 +3,8 @@ import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'dart:io';
 import '../../../../Model/customer_class.dart';
-import '../../../../data/customer_data.dart';
-import 'package:inventoryapp/Utils/constants.dart';
+import '../../../../Utils/constants.dart';
+import '../../../sevices/customer_table_helper.dart';
 
 class ImportCustomer extends StatefulWidget {
   @override
@@ -12,8 +12,7 @@ class ImportCustomer extends StatefulWidget {
 }
 
 class _ImportCustomerState extends State<ImportCustomer> {
-  List<Map<String, dynamic>> dataList = [];
-  List<String> headers = [];
+  final CustomerClassDatabaseHelper _dbHelper = CustomerClassDatabaseHelper();
 
   Future<void> pickAndLoadCustomerExcel() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -26,18 +25,9 @@ class _ImportCustomerState extends State<ImportCustomer> {
       var bytes = file.readAsBytesSync();
       var excel = Excel.decodeBytes(bytes);
 
-      List<Customer> tempList = []; // Temporary list to hold customers
-      List<Map<String, dynamic>> dataList = [];
-      List<String> headers = [];
-
       for (var table in excel.tables.keys) {
         var sheet = excel.tables[table];
         if (sheet == null) continue;
-
-        // Initialize headers from the first row of the Excel sheet
-        headers = sheet.rows.first
-            .map((cell) => cell?.value?.toString() ?? '')
-            .toList();
 
         for (var row in sheet.rows.skip(1)) {
           Customer newCustomer = Customer(
@@ -51,27 +41,20 @@ class _ImportCustomerState extends State<ImportCustomer> {
             customerCode: row[7]?.value?.toString(),
             note: row[8]?.value?.toString(),
           );
-          tempList.add(newCustomer);
 
-          dataList.add({
-            'Name': newCustomer.name,
-            'Email': newCustomer.email,
-            'Phone': newCustomer.phone,
-            'City': newCustomer.city,
-            'Region': newCustomer.region,
-            'PostalCode': newCustomer.postalCode,
-            'Country': newCustomer.country,
-            'CustomerCode': newCustomer.customerCode,
-            'Note': newCustomer.note,
-          });
+          try {
+            int customerId = await _dbHelper.insertCustomer(newCustomer); // Insert customer into the database
+            print('Customer added with ID: $customerId');
+          } catch (e) {
+            print('Error adding customer: $e');
+          }
         }
       }
-
-      CustomerData.customers.addAll(tempList);
-      setState(() {
-        this.dataList = dataList;
-        this.headers = headers;
-      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Customers imported successfully'),
+        ),
+      );
     }
   }
 
@@ -86,43 +69,11 @@ class _ImportCustomerState extends State<ImportCustomer> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: dataList.isEmpty
-          ? const Center(child: Text('No data loaded.'))
-          : SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: DataTable(
-            columns: headers.map((header) {
-              return DataColumn(
-                label: Text(
-                  header,
-                  style: const TextStyle(
-                    fontStyle: FontStyle.italic,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.blue,
-                  ),
-                ),
-              );
-            }).toList(),
-            rows: dataList.map((data) {
-              return DataRow(
-                cells: headers.map((header) {
-                  return DataCell(
-                    Text(
-                      data[header]?.toString() ?? '', // Convert to string explicitly
-                    ),
-                  );
-                }).toList(),
-              );
-            }).toList(),
-          ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: pickAndLoadCustomerExcel,
+          child: const Text('Import Customers'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: pickAndLoadCustomerExcel,
-        child: const Icon(Icons.person_add),
       ),
     );
   }
