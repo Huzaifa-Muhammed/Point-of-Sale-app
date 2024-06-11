@@ -10,7 +10,7 @@ import 'menu_screens/favorite_page.dart';
 import 'menu_screens/manage_customer_pages/customer_page.dart';
 import 'menu_screens/manage_employee_pages/employee_access_right.dart';
 import 'menu_screens/manage_employee_pages/employee_list_page.dart';
-import 'menu_screens/manage_employee_pages/employee_point_of_sale.dart';
+import 'menu_screens/point_of_sale_page.dart';
 import 'menu_screens/manage_item_pages/Item_list_Page.dart';
 import 'menu_screens/manage_item_pages/add_items_page.dart';
 import 'menu_screens/profile_page.dart';

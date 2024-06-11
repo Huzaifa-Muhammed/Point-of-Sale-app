@@ -35,7 +35,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage(images.companyLogo),
+                backgroundImage: AssetImage(images.darkLogo),
               ),
             ),
             SizedBox(height: 20),
@@ -99,7 +99,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
             Center(
               child: CircleAvatar(
                 radius: 60,
-                backgroundImage: AssetImage(images.companyLogo),
+                backgroundImage: AssetImage(images.darkLogo),
               ),
             ),
             SizedBox(height: 20),

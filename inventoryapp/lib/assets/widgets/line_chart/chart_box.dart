@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../../data/chart_data.dart';
-import '../drop_down.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/data/chart_data.dart'; // Import your data class
 import 'components/data_selection_button.dart';
 import 'components/line_chart.dart';
 
@@ -11,9 +12,37 @@ class MyGraph extends StatefulWidget {
 
 class _MyGraphState extends State<MyGraph> {
   String? selectedOption = 'Gross Value'; // Default selected option
+  String? selectedMonth = 'Month'; // Default selected month
+
+  @override
+  void initState() {
+    super.initState();
+    grossValue();
+  }
 
   @override
   Widget build(BuildContext context) {
+    String chartTitle = '';
+    switch (selectedOption) {
+      case 'Gross Value':
+        chartTitle = 'Gross Sales';
+        break;
+      case 'Refunds Value':
+        chartTitle = 'Refunds';
+        break;
+      case 'Discounts Value':
+        chartTitle = 'Discounts';
+        break;
+      case 'New Sales Value':
+        chartTitle = 'New Sales';
+        break;
+      case 'Gross Profit Value':
+        chartTitle = 'Gross Profit';
+        break;
+      default:
+        chartTitle = 'Gross Sales';
+    }
+
     return Scaffold(
       body: Column(
         children: [
@@ -81,18 +110,26 @@ class _MyGraphState extends State<MyGraph> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Gross Sales'),
-              Row(
-                children: [
-                  MyDropDown(
-                    selectedItem: 'Area',
-                    items: const ['Area', 'Item 1', 'Item 2', 'Item 3'],
+              Text(chartTitle), // Display selected chart title
+              DropdownButton<String>(
+                value: selectedMonth,
+                onChanged: (value) {
+                  setState(() {
+                    selectedMonth = value;
+                    // Add your logic to filter data based on selected month
+                    // You may call a function here to fetch data for the selected month from the database
+                  });
+                },
+                items: [
+                  DropdownMenuItem<String>(
+                    value: 'Month',
+                    child: Text('Month'),
                   ),
-                  SizedBox(width: 20,),
-                  MyDropDown(
-                    selectedItem: 'Days',
-                    items: const ['Days', 'Option 1', 'Option 2', 'Option 3'],
-                  ),
+                  for (int i = 1; i <= 12; i++)
+                    DropdownMenuItem<String>(
+                      value: '$i',
+                      child: Text('$i'),
+                    ),
                 ],
               ),
             ],
@@ -102,7 +139,7 @@ class _MyGraphState extends State<MyGraph> {
               scrollDirection: Axis.horizontal,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: MyLineChart(spots: MyData.dataList),
+                child: MyLineChart(spots: MyData.dataList), // Pass MyData.dataList to the chart
               ),
             ),
           ),

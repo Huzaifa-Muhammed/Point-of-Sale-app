@@ -3,13 +3,14 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:inventoryapp/Model/employee_checkIn_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/data/employee_checkIn_data.dart';
 import 'package:inventoryapp/data/employee_data.dart';
+import '../../Model/employee_class.dart';
+import '../../sevices/employee_table_helper.dart';
 import '../../ui/home_screen.dart';
-import '../../ui/menu_screens/manage_employee_pages/employee_point_of_sale.dart';
+import '../../ui/menu_screens/point_of_sale_page.dart';
 
 class AuthScreenWidgets {
-
-
   static Widget titleWidget(double height, String imagePath) {
     return Image(
       height: height,
@@ -33,7 +34,8 @@ class AuthScreenWidgets {
     );
   }
 
-  static Widget passwordTextField(TextEditingController passwordController, bool isObscure, VoidCallback toggleObscure) {
+  static Widget passwordTextField(TextEditingController passwordController,
+      bool isObscure, VoidCallback toggleObscure) {
     return TextFormField(
       controller: passwordController,
       obscureText: isObscure,
@@ -44,41 +46,69 @@ class AuthScreenWidgets {
         prefixIcon: const Icon(Icons.key_outlined, color: primaryColor),
         suffixIcon: GestureDetector(
           onTap: toggleObscure,
-          child: Icon(isObscure ? Icons.visibility_off_outlined : Icons.visibility_outlined),
+          child: Icon(isObscure
+              ? Icons.visibility_off_outlined
+              : Icons.visibility_outlined),
         ),
       ),
-      validator: (value) => value!.length > 6 ? null : "Please enter the correct password",
+      validator: (value) =>
+          value!.length > 6 ? null : "Please enter the correct password",
     );
   }
 
-  static Widget authScreenButton(BuildContext context,String _text,TextEditingController email,TextEditingController password) {
+  static Widget authScreenButton(
+      BuildContext context, String _text, TextEditingController email, TextEditingController password) {
     return ElevatedButton(
-      onPressed: () {
-        if (email.text == "admin123@gmail.com" && password.text == "Admin123") {
+      onPressed: () async {
+        final dbHelper = EmployeeClassDatabaseHelper();
+        await dbHelper.initializeDatabase();
+        List<Employee> employees = await dbHelper.getAllEmployees();
+        Employee? foundEmployee;
+
+        for (Employee employee in employees) {
+          if (employee.email == email.text && employee.password == password.text) {
+            foundEmployee = employee;
+            break;
+          }
+        }
+
+        if (foundEmployee != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PointofSalePage(
+                  true,
+                  eRole: foundEmployee!.role,
+                )),
+          );
+          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
+              employeeId: foundEmployee.id!,
+              checkInTime: DateTime.now());
+        } else if (email.text == "admin123@gmail.com" && password.text == "Admin123") {
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => HomeScreen()),
           );
+          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
+              employeeId: 123445, checkInTime: DateTime.now());
+        } else if (email.text == "h@gmail.com" && password.text == "123") {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => PointofSalePage(
+                  true,
+                  eRole: "Cashier",
+                )),
+          );
+          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
+              employeeId: 54432, checkInTime: DateTime.now());
         } else {
-          bool userFound = false;
-          for (int i = 0; i < EmployeeData.employees.length; i++) {
-            if (email.text == EmployeeData.employees[i].email && password.text == EmployeeData.employees[i].password) {
-              userFound = true;
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => PointofSalePage(true, eRole: EmployeeData.employees[i].role,)),
-              );
-              break;
-            }
-          }
-          if (!userFound) {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return notSignedInDialog('Email or password is wrong');
-              },
-            );
-          }
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return notSignedInDialog('Email or password is wrong');
+            },
+          );
         }
       },
       style: ElevatedButton.styleFrom(
@@ -98,10 +128,18 @@ class AuthScreenWidgets {
     );
   }
 
-  static Widget linkedText(BuildContext context,String text,Widget nextScreen) {
+  static Widget linkedText(
+      BuildContext context, String text, Widget nextScreen) {
     return GestureDetector(
-      onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => nextScreen));},
-      child: Text(text, style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w300),),
+      onTap: () {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => nextScreen));
+      },
+      child: Text(
+        text,
+        style:
+            const TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
+      ),
     );
   }
 

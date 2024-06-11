@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/assets/widgets/drop_down.dart';
+import 'package:inventoryapp/data/chart_data.dart';
 import '../../../assets/widgets/data_table.dart';
 import '../../../assets/widgets/line_chart/chart_box.dart';
 
 class DashboardPage extends StatefulWidget {
-  bool showAppBar=false;
+  bool showAppBar = false;
 
   DashboardPage(this.showAppBar);
   @override
@@ -13,13 +14,18 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-
-  List<String> list=['M','T','W','Th'];
+  List<String> list = ['M', 'T', 'W', 'Th'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: widget.showAppBar?AppBar(title:Text('Dashboard'),backgroundColor: primaryColor,foregroundColor: Colors.white,):null,
+      appBar: widget.showAppBar
+          ? AppBar(
+              title: Text('Dashboard'),
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+            )
+          : null,
       backgroundColor: Colors.grey.shade200,
       body: Padding(
         padding: const EdgeInsets.symmetric(vertical: 30),
@@ -32,11 +38,20 @@ class _DashboardPageState extends State<DashboardPage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(left: 34),
-                    child: MyDropDown(selectedItem: list.first, items: list,haveElevation: 5,width: 100,),
+                    child: MyDropDown(
+                      selectedItem: list.first,
+                      items: list,
+                      haveElevation: 5,
+                      width: 100,
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
-                    child: MyDropDown(selectedItem: list.first, items: list,haveElevation: 5,width: 100),
+                    child: MyDropDown(
+                        selectedItem: list.first,
+                        items: list,
+                        haveElevation: 5,
+                        width: 100),
                   ),
                 ],
               ),
@@ -45,7 +60,10 @@ class _DashboardPageState extends State<DashboardPage> {
                 elevation: 10,
                 child: Container(
                   height: 600,
-                  width: widget.showAppBar?MediaQuery.of(context).size.width - 100:MediaQuery.of(context).size.width - 400,
+                  padding: const EdgeInsets.all(16),
+                  width: widget.showAppBar
+                      ? MediaQuery.of(context).size.width - 100
+                      : MediaQuery.of(context).size.width - 400,
                   color: Colors.white,
                   child: MyGraph(),
                 ),
@@ -55,9 +73,14 @@ class _DashboardPageState extends State<DashboardPage> {
                 elevation: 10,
                 child: Container(
                   height: 600,
-                  width: widget.showAppBar?MediaQuery.of(context).size.width - 100:MediaQuery.of(context).size.width - 400,
+                  padding: const EdgeInsets.all(16),
+                  width: widget.showAppBar
+                      ? MediaQuery.of(context).size.width - 100
+                      : MediaQuery.of(context).size.width - 400,
                   color: Colors.white,
-                  child: MyDataTable(),
+                  child: MyDataTable(
+                    spots: MyData.dataList,
+                  ),
                 ),
               ),
             ],

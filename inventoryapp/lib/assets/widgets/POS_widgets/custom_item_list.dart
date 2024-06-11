@@ -20,7 +20,7 @@ class ItemList extends StatelessWidget {
         final item = filteredItems[index];
         return ListTile(
           title: Text(item.name),
-          subtitle: Text("Price: \$${item.price} - Category: ${item.category}"),
+          subtitle: Text("Price: €${item.price} - Category: ${item.category}"),
           trailing: Text("Quantity: ${item.quantity}"),
           onTap: () {
             if (item.quantity == '0') {

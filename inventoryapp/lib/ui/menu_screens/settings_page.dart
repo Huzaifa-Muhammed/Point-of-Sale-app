@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/UI/auth_screens/login_screen.dart';
+import 'package:inventoryapp/data/employee_checkIn_data.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -34,7 +35,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               SwitchListTile(
                 title: Text('Enable Notifications'),
                 value: notificationsEnabled,
@@ -44,7 +47,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               SwitchListTile(
                 title: Text('Allow Location Access'),
                 value: locationAccess,
@@ -54,7 +59,9 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               SwitchListTile(
                 title: Text('Receive Email Updates'),
                 value: emailUpdates,
@@ -64,24 +71,41 @@ class _SettingsPageState extends State<SettingsPage> {
                   });
                 },
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               ListTile(
                 title: Text('Language'),
                 subtitle: Text(language),
                 onTap: () => _showLanguageDialog(context),
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               ListTile(
                 title: Text('Privacy Settings'),
                 onTap: () {
                   // Navigate to privacy settings page
                 },
               ),
-              Divider(color: Color(0xFF2C1E5E).withOpacity(0.5),),
+              Divider(
+                color: Color(0xFF2C1E5E).withOpacity(0.5),
+              ),
               ListTile(
                 title: Text('Log OUt'),
                 onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    (route) => false,
+                  );
+                  EmployeeCheckInData.currentCheckInUser!
+                      .checkOutTime(DateTime.now());
+                  EmployeeCheckInData.checkIn
+                      .add(EmployeeCheckInData.currentCheckInUser!);
+                  EmployeeCheckInData.currentCheckInUser = null;
+                  print(
+                      "CHECk IN LIST  length ${EmployeeCheckInData.checkIn.length}");
                 },
               ),
             ],
@@ -99,7 +123,8 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text('Select Language'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
-            children: ['English', 'Spanish', 'French'].map((String languageOption) {
+            children:
+                ['English', 'Spanish', 'French'].map((String languageOption) {
               return RadioListTile(
                 title: Text(languageOption),
                 value: languageOption,

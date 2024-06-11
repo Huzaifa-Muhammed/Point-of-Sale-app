@@ -1,22 +1,23 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
+import 'package:inventoryapp/data/employee_checkIn_data.dart';
 import 'package:inventoryapp/data/item_data.dart';
-import 'package:inventoryapp/data/sold_items_data.dart';
 import 'package:inventoryapp/ui/auth_screens/login_screen.dart';
 import 'package:inventoryapp/assets/widgets/custom_drawer.dart';
 import 'package:inventoryapp/utils/constants.dart';
-import '../../../../Model/item_class.dart';
-import '../../../../Model/sold_item_class.dart';
-import '../../../../assets/widgets/POS_widgets/custom_item_list.dart';
-import '../../../../assets/widgets/POS_widgets/pos_cart.dart';
-import '../../../../assets/widgets/POS_widgets/search_bar.dart';
-import '../../../../assets/widgets/POS_widgets/sub_total.dart';
-import '../../../../sevices/item_table_helper.dart';
-import '../dashboard_page.dart';
-import '../manage_item_pages/add_items.dart';
-import '../manage_item_pages/add_items_page.dart';
-import '../manage_item_pages/import_items.dart';
+import '../../../Model/item_class.dart';
+import '../../../Model/sold_item_class.dart';
+import '../../../assets/widgets/POS_widgets/custom_item_list.dart';
+import '../../../assets/widgets/POS_widgets/pos_cart.dart';
+import '../../../assets/widgets/POS_widgets/search_bar.dart';
+import '../../../assets/widgets/POS_widgets/sub_total.dart';
+import '../../sevices/item_table_helper.dart';
+import '../../sevices/soldItem_table_helper.dart';
+import 'dashboard_page.dart';
+import 'manage_item_pages/add_items.dart';
+import 'manage_item_pages/add_items_page.dart';
+import 'manage_item_pages/import_items.dart';
 
 class PointofSalePage extends StatefulWidget {
   final bool showAppBar;
@@ -29,6 +30,7 @@ class PointofSalePage extends StatefulWidget {
 }
 
 class _PointofSalePageState extends State<PointofSalePage> {
+  final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper(); // Initialize SoldItemClassDatabaseHelper
   List<Item> cartItems = [];
   List<Item> filteredItems = [];
   Timer? _timer;
@@ -139,14 +141,17 @@ class _PointofSalePageState extends State<PointofSalePage> {
     });
   }
 
-  void onCheckout() {
+  void onCheckout() async {
+    DateTime now = DateTime.now();
+    for (Item item in cartItems) {
+      SoldItem soldItem = SoldItem(
+        item: item,
+        date: now,
+      );
+      await soldItemDBHelper.insertSoldItem(soldItem);
+    }
     setState(() {
-      List<Item> temp = cartItems;
-      for (int i = 0; i < temp.length; i++) {
-        SoldItem si = SoldItem(item: temp[i], date: DateTime.now());
-        SoldItemsData.soldItems.add(si);
-        cartItems.clear();
-      }
+      cartItems.clear();
     });
   }
 
@@ -207,50 +212,59 @@ class _PointofSalePageState extends State<PointofSalePage> {
                   builder: (context) => AddItem(showAppBar: true)));
         },
         onLogoutPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => LoginScreen()));
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => LoginScreen()),
+            (route) => false,
+          );
+          EmployeeCheckInData.currentCheckInUser!.checkOutTime(DateTime.now());
+          EmployeeCheckInData.checkIn
+              .add(EmployeeCheckInData.currentCheckInUser!);
+          EmployeeCheckInData.currentCheckInUser = null;
+          print("CHECk IN LIST  length ${EmployeeCheckInData.checkIn.length}");
         },
         role: widget.eRole,
         onDashBoardPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => DashboardPage(true)));
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => DashboardPage(true)));
         },
       ),
       appBar: widget.showAppBar
           ? AppBar(
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              'Point of Sale',
-              style: TextStyle(color: Colors.white),
-            ),
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () async {
-                  String barcodeScanRes = await FlutterBarcodeScanner.scanBarcode(
-                      "#ff6666", "Cancel", true, ScanMode.BARCODE);
-                  if (barcodeScanRes != '-1') {
-                    var item = Item(
-                      id: null,
-                      name: 'Sample Item',
-                      category: 'Sample Category',
-                      price: '10.00',
-                      margin: '2.00',
-                      quantity: '1',
-                    );
-                    ItemData.items.add(item);
-                  }
-                },
-                child: const Icon(Icons.document_scanner_outlined),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Point of Sale',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () async {
+                        String barcodeScanRes =
+                            await FlutterBarcodeScanner.scanBarcode(
+                                "#ff6666", "Cancel", true, ScanMode.BARCODE);
+                        if (barcodeScanRes != '-1') {
+                          var item = Item(
+                            id: null,
+                            name: 'Sample Item',
+                            category: 'Sample Category',
+                            price: '10.00',
+                            margin: '2.00',
+                            quantity: '1',
+                          );
+                          ItemData.items.add(item);
+                        }
+                      },
+                      child: const Icon(Icons.document_scanner_outlined),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
-        backgroundColor: primaryColor,
-        foregroundColor: Colors.white,
-      )
+              backgroundColor: primaryColor,
+              foregroundColor: Colors.white,
+            )
           : null,
       body: Row(
         children: [
@@ -279,10 +293,10 @@ class _PointofSalePageState extends State<PointofSalePage> {
                     child: filteredItems.isEmpty
                         ? buildEmptyState()
                         : ItemList(
-                      filteredItems: filteredItems,
-                      onItemTap: onItemTap,
-                      showErrorDialog: showErrorDialog,
-                    ),
+                            filteredItems: filteredItems,
+                            onItemTap: onItemTap,
+                            showErrorDialog: showErrorDialog,
+                          ),
                   ),
                 ),
               ],

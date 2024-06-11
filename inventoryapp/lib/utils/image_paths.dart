@@ -3,10 +3,8 @@ class Images {
   String profileImage ='lib/assets/Images/profile_pic.png';
 
   // Icon
-  String darkLogo = 'lib/assets/Images/darkLogo.png';
-  String lightLogo = 'lib/assets/Images/lightLogo.png';
+  String darkLogo = 'lib/assets/Images/logo.png';
+  String lightLogo = 'lib/assets/Images/logo.png';
 
-  //Logo
-  String companyLogo = 'lib/assets/Images/company_logo.jpeg';
 }
 

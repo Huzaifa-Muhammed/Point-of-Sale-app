@@ -9,26 +9,45 @@ class MyLineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double maxYValue = calculateMaxY(spots);
+
     return AspectRatio(
       aspectRatio: 3,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: LineChart(
-          _mainData(spots),
+          _mainData(spots, maxYValue),
         ),
       ),
     );
   }
 
-  LineChartData _mainData(List<FlSpot> spots) {
+  double calculateMaxY(List<FlSpot> spots) {
+    double maxSumPrice = 0;
+
+    Map<int, double> sumPricesByDay = {};
+    for (FlSpot spot in spots) {
+      int day = spot.x.toInt();
+      double price = spot.y;
+      sumPricesByDay[day] = (sumPricesByDay[day] ?? 0) + price;
+    }
+    sumPricesByDay.values.forEach((price) {
+      if (price > maxSumPrice) {
+        maxSumPrice = price;
+      }
+    });
+    return maxSumPrice + 40;
+  }
+
+  LineChartData _mainData(List<FlSpot> spots, double maxYValue) {
     return LineChartData(
       lineTouchData: LineTouchData(
-        touchTooltipData: LineTouchTooltipData(),
+        touchTooltipData: const LineTouchTooltipData(),
         touchCallback: (FlTouchEvent event, LineTouchResponse? touchResponse) {},
         handleBuiltInTouches: true,
       ),
-      gridData: FlGridData(
-        show: false, // Don't show grid lines
+      gridData: const FlGridData(
+        show: false,
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -60,8 +79,8 @@ class MyLineChart extends StatelessWidget {
       ),
       minX: 1,
       maxX: 30,
-      minY: -100,
-      maxY: 100,
+      minY: 0,
+      maxY: maxYValue,
       lineBarsData: [
         LineChartBarData(
           spots: spots,
@@ -76,7 +95,7 @@ class MyLineChart extends StatelessWidget {
                 radius: 6,
                 strokeWidth: 2,
                 color: primaryColor,
-                strokeColor: Colors.white, // Change the stroke color to white for hollow effect
+                strokeColor: Colors.white,
               );
             },
           ),
@@ -184,7 +203,8 @@ class MyLineChart extends StatelessWidget {
         text = const Text('29', style: style);
         break;
       case 30:
-        text = const Text('30', style: style);
+        text = const
+        Text('30', style: style);
         break;
       default:
         text = const Text('', style: style);
