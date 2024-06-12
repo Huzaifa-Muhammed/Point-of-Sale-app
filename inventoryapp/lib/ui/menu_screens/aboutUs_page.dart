@@ -38,10 +38,10 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 backgroundImage: AssetImage(images.darkLogo),
               ),
             ),
-            SizedBox(height: 20),
-            Center(
+            const SizedBox(height: 20),
+            const Center(
               child: Text(
-                'Web Pointers Solution',
+                'Biz IT Solution',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -49,7 +49,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Text(
                 'Making the world a better place, one line of code at a time.',
@@ -61,12 +61,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildSection('Who We Are', 'We are a team of passionate developers and designers committed to creating amazing software solutions. Our mission is to deliver high-quality products that bring value to our customers.'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildSection('Our Mission', 'Our mission is to innovate and lead in the tech industry, providing state-of-the-art solutions that improve efficiency and drive success for our clients.'),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Meet the Team',
               style: TextStyle(
                 fontSize: 24,
@@ -74,7 +74,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 color: Color(0xFF2C1E5E), // Custom purple color
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
@@ -83,6 +83,8 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 _buildTeamMember(images.profileImage, 'Charlie', 'Designer'),
               ],
             ),
+            const SizedBox(height: 20),
+            _buildSection('Contact Us', 'BizIT@gmail.com'),
           ],
         ),
       ),
@@ -102,10 +104,10 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 backgroundImage: AssetImage(images.darkLogo),
               ),
             ),
-            SizedBox(height: 20),
-            Center(
+            const SizedBox(height: 20),
+            const Center(
               child: Text(
-                'Web Pointers Solution',
+                'Biz IT Solution',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
@@ -113,7 +115,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Center(
               child: Text(
                 'Making the world a better place, one line of code at a time.',
@@ -125,12 +127,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 ),
               ),
             ),
-            SizedBox(height: 30),
+            const SizedBox(height: 30),
             _buildSection('Who We Are', 'We are a team of passionate developers and designers committed to creating amazing software solutions. Our mission is to deliver high-quality products that bring value to our customers.'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildSection('Our Mission', 'Our mission is to innovate and lead in the tech industry, providing state-of-the-art solutions that improve efficiency and drive success for our clients.'),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Meet the Team',
               style: TextStyle(
                 fontSize: 24,
@@ -138,13 +140,13 @@ class _AboutUsPageState extends State<AboutUsPage> {
                 color: Color(0xFF2C1E5E), // Custom purple color
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Column(
               children: <Widget>[
                 _buildTeamMember(images.profileImage, 'Alice', 'CEO'),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTeamMember(images.profileImage, 'Bob', 'CTO'),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 _buildTeamMember(images.profileImage, 'Charlie', 'Designer'),
               ],
             ),
@@ -160,16 +162,16 @@ class _AboutUsPageState extends State<AboutUsPage> {
       children: <Widget>[
         Text(
           title,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
             color: Color(0xFF2C1E5E), // Custom purple color
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           content,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             height: 1.5,
           ),
@@ -185,10 +187,10 @@ class _AboutUsPageState extends State<AboutUsPage> {
           radius: 40,
           backgroundImage: AssetImage(imagePath),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Text(
           name,
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 16,
             fontWeight: FontWeight.bold,
           ),

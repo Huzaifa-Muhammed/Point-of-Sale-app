@@ -11,8 +11,8 @@ class MyGraph extends StatefulWidget {
 }
 
 class _MyGraphState extends State<MyGraph> {
-  String? selectedOption = 'Gross Value'; // Default selected option
-  String? selectedMonth = 'Month'; // Default selected month
+  String? selectedOption = 'Gross Value';
+  String? selectedMonth = 'Month';
 
   @override
   void initState() {
