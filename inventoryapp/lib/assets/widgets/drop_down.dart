@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 
 class MyDropDown extends StatefulWidget {
-
   final List<String> items;
-  late String selectedItem;
+  String selectedItem;
   final double? haveElevation;
   final double? width;
   final double? height;
+  final ValueChanged<String> onChanged; // Callback function
+
   MyDropDown({
     required this.selectedItem,
     required this.items,
+    required this.onChanged,
     this.haveElevation = 0,
     this.width,
     this.height,
@@ -36,9 +38,12 @@ class _MyDropDownState extends State<MyDropDown> {
             iconSize: 24,
             elevation: 16,
             onChanged: (String? newValue) {
-              setState(() {
-                widget.selectedItem = newValue!; // Update selectedItem value
-              });
+              if (newValue != null) {
+                setState(() {
+                  widget.selectedItem = newValue;
+                });
+                widget.onChanged(newValue); // Notify parent widget
+              }
             },
             items: widget.items.map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(

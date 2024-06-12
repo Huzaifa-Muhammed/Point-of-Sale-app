@@ -6,7 +6,7 @@ class MyData {
   static final List<FlSpot> dataList = [];
 }
 
-Future<void> grossValue() async {
+Future<void> grossValue(int Month) async {
   final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper(); // Initialize SoldItemClassDatabaseHelper
   Map<DateTime, double> cartMap = {};
 
@@ -17,7 +17,7 @@ Future<void> grossValue() async {
     cartMap[DateTime(currentDate.year, currentDate.month, day)] = 0.0;
   }
 
-  final List<SoldItem> soldItemsList = await soldItemDBHelper.getAllSoldItems();
+  final List<SoldItem> soldItemsList = await soldItemDBHelper.getSoldItemsByMonth(Month);
 
   for (SoldItem soldItem in soldItemsList) {
     final DateTime date = DateTime(soldItem.date.year, soldItem.date.month, soldItem.date.day);

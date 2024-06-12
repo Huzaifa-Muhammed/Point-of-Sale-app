@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/data/chart_data.dart'; // Import your data class
+import '../../../data/chart_data.dart';
+import '../drop_down.dart';
 import 'components/data_selection_button.dart';
 import 'components/line_chart.dart';
 
@@ -11,38 +10,95 @@ class MyGraph extends StatefulWidget {
 }
 
 class _MyGraphState extends State<MyGraph> {
-  String? selectedOption = 'Gross Value';
-  String? selectedMonth = 'Month';
+  String? selectedOption = 'Gross Value'; // Default selected option
+  String selectedMonth = 'Months'; // Default selected month
 
   @override
   void initState() {
     super.initState();
-    grossValue();
+    try {
+      grossValue(DateTime
+          .now()
+          .month);
+    }catch(e)
+    {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.green[50],
+            title: const Text('Item Added Successfully'),
+            shape: const RoundedRectangleBorder(),
+            icon: const Icon(Icons.check, size: 20),
+            iconColor: Colors.green,
+          );
+        },
+      );
+    }
+    for (int i = 0; i < MyData.dataList.length; i++) {
+      print("x: ${MyData.dataList[i].x}  y: ${MyData.dataList[i].y} ");
+    }
+  }
+
+  void updateChartData(String month) {
+    setState(() {
+      selectedMonth = month;
+      int monthNumber = getMonthNumber(month);
+      // Update the data based on the selected month
+      if (monthNumber != 0) {
+        try {
+          grossValue(monthNumber);
+        }catch(e){
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: Colors.green[50],
+                title: const Text('Item Added Successfully'),
+                shape: const RoundedRectangleBorder(),
+                icon: const Icon(Icons.check, size: 20),
+                iconColor: Colors.green,
+              );
+            },
+          );
+        }
+      }
+    });
+  }
+
+  int getMonthNumber(String month) {
+    switch (month) {
+      case "January":
+        return 1;
+      case "February":
+        return 2;
+      case "March":
+        return 3;
+      case "April":
+        return 4;
+      case "May":
+        return 5;
+      case "June":
+        return 6;
+      case "July":
+        return 7;
+      case "August":
+        return 8;
+      case "September":
+        return 9;
+      case "October":
+        return 10;
+      case "November":
+        return 11;
+      case "December":
+        return 12;
+      default:
+        return 0;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    String chartTitle = '';
-    switch (selectedOption) {
-      case 'Gross Value':
-        chartTitle = 'Gross Sales';
-        break;
-      case 'Refunds Value':
-        chartTitle = 'Refunds';
-        break;
-      case 'Discounts Value':
-        chartTitle = 'Discounts';
-        break;
-      case 'New Sales Value':
-        chartTitle = 'New Sales';
-        break;
-      case 'Gross Profit Value':
-        chartTitle = 'Gross Profit';
-        break;
-      default:
-        chartTitle = 'Gross Sales';
-    }
-
     return Scaffold(
       body: Column(
         children: [
@@ -110,26 +166,18 @@ class _MyGraphState extends State<MyGraph> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(chartTitle), // Display selected chart title
-              DropdownButton<String>(
-                value: selectedMonth,
-                onChanged: (value) {
-                  setState(() {
-                    selectedMonth = value;
-                    // Add your logic to filter data based on selected month
-                    // You may call a function here to fetch data for the selected month from the database
-                  });
-                },
-                items: [
-                  DropdownMenuItem<String>(
-                    value: 'Month',
-                    child: Text('Month'),
+              const Text('Gross Sales'),
+              Row(
+                children: [
+                  MyDropDown(
+                    selectedItem: selectedMonth,
+                    items: const ["Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                    onChanged: (value) {
+                      if (value != "Months") {
+                        updateChartData(value);
+                      }
+                    },
                   ),
-                  for (int i = 1; i <= 12; i++)
-                    DropdownMenuItem<String>(
-                      value: '$i',
-                      child: Text('$i'),
-                    ),
                 ],
               ),
             ],
@@ -139,7 +187,7 @@ class _MyGraphState extends State<MyGraph> {
               scrollDirection: Axis.horizontal,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: MyLineChart(spots: MyData.dataList), // Pass MyData.dataList to the chart
+                child: MyLineChart(spots: MyData.dataList),
               ),
             ),
           ),

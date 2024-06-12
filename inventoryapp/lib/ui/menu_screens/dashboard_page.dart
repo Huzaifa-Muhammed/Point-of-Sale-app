@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/assets/widgets/drop_down.dart';
 import 'package:inventoryapp/data/chart_data.dart';
 import '../../../assets/widgets/data_table.dart';
 import '../../../assets/widgets/line_chart/chart_box.dart';
@@ -14,7 +13,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  List<String> list = ['M', 'T', 'W', 'Th'];
 
   @override
   Widget build(BuildContext context) {
@@ -28,33 +26,11 @@ class _DashboardPageState extends State<DashboardPage> {
           : null,
       backgroundColor: Colors.grey.shade200,
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30),
+        padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 30),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 34),
-                    child: MyDropDown(
-                      selectedItem: list.first,
-                      items: list,
-                      haveElevation: 5,
-                      width: 100,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30),
-                    child: MyDropDown(
-                        selectedItem: list.first,
-                        items: list,
-                        haveElevation: 5,
-                        width: 100),
-                  ),
-                ],
-              ),
               const SizedBox(height: 20), // Adjust spacing as needed
               Material(
                 elevation: 10,
