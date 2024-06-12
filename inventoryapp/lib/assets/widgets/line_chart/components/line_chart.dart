@@ -36,7 +36,7 @@ class MyLineChart extends StatelessWidget {
         maxSumPrice = price;
       }
     });
-    return maxSumPrice + 40;
+    return maxSumPrice;
   }
 
   LineChartData _mainData(List<FlSpot> spots, double maxYValue) {
@@ -80,7 +80,7 @@ class MyLineChart extends StatelessWidget {
       minX: 1,
       maxX: 30,
       minY: 0,
-      maxY: maxYValue,
+      maxY: maxYValue+500,
       lineBarsData: [
         LineChartBarData(
           spots: spots,
