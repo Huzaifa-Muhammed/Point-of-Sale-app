@@ -13,6 +13,7 @@ import '../../../assets/widgets/POS_widgets/pos_cart.dart';
 import '../../../assets/widgets/POS_widgets/search_bar.dart';
 import '../../../assets/widgets/POS_widgets/sub_total.dart';
 import '../../sevices/item_table_helper.dart';
+import '../../sevices/printer_helper.dart';
 import '../../sevices/soldItem_table_helper.dart';
 import 'dashboard_page.dart';
 import 'manage_item_pages/add_items.dart';
@@ -150,6 +151,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
       );
       await soldItemDBHelper.insertSoldItem(soldItem);
     }
+    await PrinterHelper.printReceipt(cartItems);
     setState(() {
       cartItems.clear();
     });
@@ -215,7 +217,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
           Navigator.pushAndRemoveUntil(
             context,
             MaterialPageRoute(builder: (context) => LoginScreen()),
-            (route) => false,
+                (route) => false,
           );
           EmployeeCheckInData.currentCheckInUser!.checkOutTime(DateTime.now());
           EmployeeCheckInData.checkIn
@@ -231,40 +233,40 @@ class _PointofSalePageState extends State<PointofSalePage> {
       ),
       appBar: widget.showAppBar
           ? AppBar(
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Point of Sale',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                  MouseRegion(
-                    cursor: SystemMouseCursors.click,
-                    child: GestureDetector(
-                      onTap: () async {
-                        String barcodeScanRes =
-                            await FlutterBarcodeScanner.scanBarcode(
-                                "#ff6666", "Cancel", true, ScanMode.BARCODE);
-                        if (barcodeScanRes != '-1') {
-                          var item = Item(
-                            id: null,
-                            name: 'Sample Item',
-                            category: 'Sample Category',
-                            price: '10.00',
-                            margin: '2.00',
-                            quantity: '1',
-                          );
-                          ItemData.items.add(item);
-                        }
-                      },
-                      child: const Icon(Icons.document_scanner_outlined),
-                    ),
-                  ),
-                ],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Point of Sale',
+              style: TextStyle(color: Colors.white),
+            ),
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () async {
+                  String barcodeScanRes =
+                  await FlutterBarcodeScanner.scanBarcode(
+                      "#ff6666", "Cancel", true, ScanMode.BARCODE);
+                  if (barcodeScanRes != '-1') {
+                    var item = Item(
+                      id: null,
+                      name: 'Sample Item',
+                      category: 'Sample Category',
+                      price: '10.00',
+                      margin: '2.00',
+                      quantity: '1',
+                    );
+                    ItemData.items.add(item);
+                  }
+                },
+                child: const Icon(Icons.document_scanner_outlined),
               ),
-              backgroundColor: primaryColor,
-              foregroundColor: Colors.white,
-            )
+            ),
+          ],
+        ),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+      )
           : null,
       body: Row(
         children: [
@@ -293,10 +295,10 @@ class _PointofSalePageState extends State<PointofSalePage> {
                     child: filteredItems.isEmpty
                         ? buildEmptyState()
                         : ItemList(
-                            filteredItems: filteredItems,
-                            onItemTap: onItemTap,
-                            showErrorDialog: showErrorDialog,
-                          ),
+                      filteredItems: filteredItems,
+                      onItemTap: onItemTap,
+                      showErrorDialog: showErrorDialog,
+                    ),
                   ),
                 ),
               ],
