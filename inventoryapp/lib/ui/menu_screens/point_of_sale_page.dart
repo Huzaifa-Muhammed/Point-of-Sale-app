@@ -70,7 +70,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   double getSubtotal() {
-    return cartItems.fold(0, (sum, item) => sum + double.parse(item.price));
+    return cartItems.fold(0, (sum, item) => sum + (double.parse(item.price) * int.parse(item.quantity)));
   }
 
   void importItems() {
@@ -125,22 +125,40 @@ class _PointofSalePageState extends State<PointofSalePage> {
     await _loadItemsFromDatabase();
 
     setState(() {
-      Item cartItem = Item(
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        quantity: '1',
-        category: item.category,
-        margin: item.margin,
-      );
-      cartItems.add(cartItem);
+      int cartIndex = cartItems.indexWhere((cartItem) =>
+      cartItem.id == item.id &&
+          cartItem.name == item.name &&
+          cartItem.category == item.category);
+
+      if (cartIndex != -1) {
+        Item cartItem = cartItems[cartIndex];
+        int updatedQuantity = int.parse(cartItem.quantity) + 1;
+        cartItems[cartIndex] = Item(
+          id: cartItem.id,
+          name: cartItem.name,
+          price: cartItem.price,
+          quantity: updatedQuantity.toString(),
+          category: cartItem.category,
+          margin: cartItem.margin,
+        );
+      } else {
+        Item cartItem = Item(
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: '1',
+          category: item.category,
+          margin: item.margin,
+        );
+        cartItems.add(cartItem);
+      }
     });
   }
 
   void onRemoveItem(int index) async {
     Item item = cartItems[index];
     int existingQuantity = int.parse(ItemData.items.firstWhere((i) => i.id == item.id).quantity);
-    int newQuantity = existingQuantity + 1;
+    int newQuantity = existingQuantity + int.parse(item.quantity);
     await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
     await _loadItemsFromDatabase();
 

@@ -16,7 +16,13 @@ class Cart extends StatelessWidget {
         final cartItem = cartItems[index];
         return ListTile(
           title: Text(cartItem.name),
-          subtitle: Text("Price: €${cartItem.price}"),
+          subtitle: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text("Price: €${cartItem.price}\t-"),
+              Text("Quantity: ${cartItem.quantity}"),
+            ],
+          ),
           trailing: GestureDetector(
             onTap: () {
               onRemoveItem(index);
