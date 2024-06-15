@@ -7,8 +7,8 @@ class AboutUsPage extends StatefulWidget {
 }
 
 class _AboutUsPageState extends State<AboutUsPage> {
+  Images images = Images();
 
-  Images images=Images();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,29 +62,15 @@ class _AboutUsPageState extends State<AboutUsPage> {
               ),
             ),
             const SizedBox(height: 30),
-            _buildSection('Who We Are', 'Welcome to Bizit Solutions! Based in Ireland, we specialize in providing a seamless and easy-to-use Point of Sale & Inventory app tailored for business owners.'),
+            _buildSection('Who We Are',
+                'Welcome to Bizit Solutions! Based in Ireland, we specialize in providing a seamless and easy-to-use Point of Sale & Inventory app tailored for business owners.'),
             const SizedBox(height: 20),
-            _buildSection('Our Mission', ' Our app simplifies daily operations, allowing you to manage sales and inventory effortlessly.'),
+            _buildSection('Our Mission',
+                ' Our app simplifies daily operations, allowing you to manage sales and inventory effortlessly.'),
             const SizedBox(height: 20),
-            const Text(
-              'Meet the Team',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2C1E5E), // Custom purple color
-              ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                _buildTeamMember(images.profileImage, 'Alice', 'CEO'),
-                _buildTeamMember(images.profileImage, 'Bob', 'CTO'),
-                _buildTeamMember(images.profileImage, 'Charlie', 'Designer'),
-              ],
-            ),
             const SizedBox(height: 20),
-            _buildSection('Contact Us', 'Reach out to us at support@bizitsolutions.ie for support and inquiries.'),
+            _buildSection('Contact Us',
+                'Reach out to us at support@bizitsolutions.ie for support and inquiries.'),
           ],
         ),
       ),
@@ -128,28 +114,12 @@ class _AboutUsPageState extends State<AboutUsPage> {
               ),
             ),
             const SizedBox(height: 30),
-            _buildSection('Who We Are', 'We are a team of passionate developers and designers committed to creating amazing software solutions. Our mission is to deliver high-quality products that bring value to our customers.'),
+            _buildSection('Who We Are',
+                'We are a team of passionate developers and designers committed to creating amazing software solutions. Our mission is to deliver high-quality products that bring value to our customers.'),
             const SizedBox(height: 20),
-            _buildSection('Our Mission', 'Our mission is to innovate and lead in the tech industry, providing state-of-the-art solutions that improve efficiency and drive success for our clients.'),
+            _buildSection('Our Mission',
+                'Our mission is to innovate and lead in the tech industry, providing state-of-the-art solutions that improve efficiency and drive success for our clients.'),
             const SizedBox(height: 20),
-            const Text(
-              'Meet the Team',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF2C1E5E), // Custom purple color
-              ),
-            ),
-            const SizedBox(height: 10),
-            Column(
-              children: <Widget>[
-                _buildTeamMember(images.profileImage, 'Alice', 'CEO'),
-                const SizedBox(height: 10),
-                _buildTeamMember(images.profileImage, 'Bob', 'CTO'),
-                const SizedBox(height: 10),
-                _buildTeamMember(images.profileImage, 'Charlie', 'Designer'),
-              ],
-            ),
           ],
         ),
       ),
@@ -174,32 +144,6 @@ class _AboutUsPageState extends State<AboutUsPage> {
           style: const TextStyle(
             fontSize: 16,
             height: 1.5,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTeamMember(String imagePath, String name, String position) {
-    return Column(
-      children: <Widget>[
-        CircleAvatar(
-          radius: 40,
-          backgroundImage: AssetImage(imagePath),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          position,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[700],
           ),
         ),
       ],

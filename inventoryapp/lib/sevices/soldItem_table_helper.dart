@@ -64,4 +64,19 @@ class SoldItemClassDatabaseHelper {
     });
   }
 
+  Future<List<SoldItem>> getSoldItemsByMonthAndYear(int month, int year) async {
+    await initializeDatabase();
+    final String formattedMonth = month.toString().padLeft(2, '0');
+    final String formattedYear = year.toString();
+
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'sold_items',
+      where: 'strftime("%m", date) = ? AND strftime("%Y", date) = ?',
+      whereArgs: [formattedMonth, formattedYear],
+    );
+
+    return List.generate(maps.length, (i) {
+      return SoldItem.fromMap(maps[i]);
+    });
+  }
 }

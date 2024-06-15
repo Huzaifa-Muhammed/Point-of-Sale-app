@@ -31,7 +31,8 @@ class PointofSalePage extends StatefulWidget {
 }
 
 class _PointofSalePageState extends State<PointofSalePage> {
-  final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper(); // Initialize SoldItemClassDatabaseHelper
+  final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper();
+  final ItemClassDatabaseHelper itemDBHelper = ItemClassDatabaseHelper();
   List<Item> cartItems = [];
   List<Item> filteredItems = [];
   Timer? _timer;
@@ -51,7 +52,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   Future<void> _loadItemsFromDatabase() async {
-    List<Item> items = await ItemClassDatabaseHelper().getAllItems();
+    List<Item> items = await itemDBHelper.getAllItems();
     setState(() {
       ItemData.items = items;
       filteredItems = items;
@@ -114,7 +115,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
     });
   }
 
-  void onItemTap(Item item) {
+  void onItemTap(Item item) async {
     setState(() {
       Item cartItem = Item(
         id: item.id,
@@ -125,21 +126,26 @@ class _PointofSalePageState extends State<PointofSalePage> {
         margin: item.margin,
       );
       cartItems.add(cartItem);
-      ItemData.items.firstWhere((i) => i.id == item.id).quantity =
-          (int.parse(item.quantity) - 1).toString();
     });
+    int newQuantity = int.parse(item.quantity) - 1;
+    if (newQuantity > 0) {
+      await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
+    } else {
+      await itemDBHelper.deleteItem(item.id!);
+    }
+    await _loadItemsFromDatabase();
   }
 
-  void onRemoveItem(int index) {
+  void onRemoveItem(int index) async {
+    Item item = cartItems[index];
     setState(() {
-      for (int i = 0; i < ItemData.items.length; i++) {
-        if (ItemData.items[i].id == cartItems[index].id) {
-          ItemData.items[i].quantity =
-              (int.parse(ItemData.items[i].quantity) + 1).toString();
-        }
-      }
       cartItems.removeAt(index);
     });
+
+    int existingQuantity = int.parse(ItemData.items.firstWhere((i) => i.id == item.id).quantity);
+    int newQuantity = existingQuantity + 1;
+    await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
+    await _loadItemsFromDatabase();
   }
 
   void onCheckout() async {

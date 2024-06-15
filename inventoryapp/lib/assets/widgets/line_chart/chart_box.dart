@@ -12,25 +12,29 @@ class MyGraph extends StatefulWidget {
 class _MyGraphState extends State<MyGraph> {
   String? selectedOption = 'Gross Value'; // Default selected option
   String selectedMonth = 'Months'; // Default selected month
+  String selectedYear = 'Year'; // Default selected year
+  List<String> years = ['Year']; // List of years
 
   @override
   void initState() {
     super.initState();
+    // Initialize the years list with the range 2023 to 2050
+    for (int i = 2023; i <= 2050; i++) {
+      years.add(i.toString());
+    }
+
     try {
-      grossValue(DateTime
-          .now()
-          .month);
-    }catch(e)
-    {
+      grossValue(DateTime.now().month, DateTime.now().year);
+    } catch (e) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.green[50],
-            title: const Text('Item Added Successfully'),
+            title: const Text('Error'),
             shape: const RoundedRectangleBorder(),
-            icon: const Icon(Icons.check, size: 20),
-            iconColor: Colors.green,
+            icon: const Icon(Icons.error, size: 20),
+            iconColor: Colors.red,
           );
         },
       );
@@ -40,24 +44,27 @@ class _MyGraphState extends State<MyGraph> {
     }
   }
 
-  void updateChartData(String month) {
+  void updateChartData(String month, String year) {
     setState(() {
       selectedMonth = month;
+      selectedYear = year;
       int monthNumber = getMonthNumber(month);
-      // Update the data based on the selected month
-      if (monthNumber != 0) {
+      int yearNumber = int.parse(year);
+
+      // Update the data based on the selected month and year
+      if (monthNumber != 0 && yearNumber != 0) {
         try {
-          grossValue(monthNumber);
-        }catch(e){
+          grossValue(monthNumber, yearNumber);
+        } catch (e) {
           showDialog(
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
                 backgroundColor: Colors.green[50],
-                title: const Text('Item Added Successfully'),
+                title: const Text('Error'),
                 shape: const RoundedRectangleBorder(),
-                icon: const Icon(Icons.check, size: 20),
-                iconColor: Colors.green,
+                icon: const Icon(Icons.error, size: 20),
+                iconColor: Colors.red,
               );
             },
           );
@@ -118,39 +125,6 @@ class _MyGraphState extends State<MyGraph> {
               ),
               Expanded(
                 child: DataSelectionButton(
-                  option: 'Refunds Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'Refunds Value',
-                  onPressed: () {
-                    setState(() {
-                      selectedOption = 'Refunds Value';
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: DataSelectionButton(
-                  option: 'Discounts Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'Discounts Value',
-                  onPressed: () {
-                    setState(() {
-                      selectedOption = 'Discounts Value';
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: DataSelectionButton(
-                  option: 'New Sales Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'New Sales Value',
-                  onPressed: () {
-                    setState(() {
-                      selectedOption = 'New Sales Value';
-                    });
-                  },
-                ),
-              ),
-              Expanded(
-                child: DataSelectionButton(
                   option: 'Gross Profit Value\n€0.0\n€0.00 (0%)',
                   isSelected: selectedOption == 'Gross Profit Value',
                   onPressed: () {
@@ -171,10 +145,33 @@ class _MyGraphState extends State<MyGraph> {
                 children: [
                   MyDropDown(
                     selectedItem: selectedMonth,
-                    items: const ["Months", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+                    items: const [
+                      "Months",
+                      "January",
+                      "February",
+                      "March",
+                      "April",
+                      "May",
+                      "June",
+                      "July",
+                      "August",
+                      "September",
+                      "October",
+                      "November",
+                      "December"
+                    ],
                     onChanged: (value) {
-                      if (value != "Months") {
-                        updateChartData(value);
+                      if (value != "Months" || selectedYear != "Year") {
+                        updateChartData(value, selectedYear);
+                      }
+                    },
+                  ),
+                  MyDropDown(
+                    selectedItem: selectedYear,
+                    items: years,
+                    onChanged: (value) {
+                      if (value != "Year" || selectedMonth != "Months") {
+                        updateChartData(selectedMonth, value);
                       }
                     },
                   ),

@@ -49,6 +49,17 @@ class ItemClassDatabaseHelper {
     );
   }
 
+  // Update item quantity in the database
+  Future<int> updateItemQuantity(int id, String newQuantity) async {
+    await initializeDatabase();
+    return await _database.update(
+      'items',
+      {'quantity': newQuantity},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   // Delete an item from the database
   Future<int> deleteItem(int id) async {
     await initializeDatabase();

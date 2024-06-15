@@ -3,6 +3,7 @@ import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/data/chart_data.dart';
 import '../../../assets/widgets/data_table.dart';
 import '../../../assets/widgets/line_chart/chart_box.dart';
+import 'dart:async';
 
 class DashboardPage extends StatefulWidget {
   bool showAppBar = false;
@@ -13,20 +14,35 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: widget.showAppBar
           ? AppBar(
-              title: Text('Dashboard'),
-              backgroundColor: primaryColor,
-              foregroundColor: Colors.white,
-            )
+        title: Text('Dashboard'),
+        backgroundColor: primaryColor,
+        foregroundColor: Colors.white,
+      )
           : null,
       backgroundColor: Colors.grey.shade200,
       body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 30,horizontal: 30),
+        padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
