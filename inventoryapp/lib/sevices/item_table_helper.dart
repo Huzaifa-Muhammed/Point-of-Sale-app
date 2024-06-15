@@ -29,7 +29,7 @@ class ItemClassDatabaseHelper {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
-  // Retrieve all items from the database
+
   Future<List<Item>> getAllItems() async {
     await initializeDatabase();
     final List<Map<String, dynamic>> maps = await _database.query('items');
@@ -38,7 +38,6 @@ class ItemClassDatabaseHelper {
     });
   }
 
-  // Update an item in the database
   Future<int> updateItem(Item item) async {
     await initializeDatabase();
     return await _database.update(
@@ -49,7 +48,6 @@ class ItemClassDatabaseHelper {
     );
   }
 
-  // Update item quantity in the database
   Future<int> updateItemQuantity(int id, String newQuantity) async {
     await initializeDatabase();
     return await _database.update(

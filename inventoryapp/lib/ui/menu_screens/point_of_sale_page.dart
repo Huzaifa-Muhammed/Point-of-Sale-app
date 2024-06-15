@@ -116,6 +116,14 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   void onItemTap(Item item) async {
+    int newQuantity = int.parse(item.quantity) - 1;
+    if (newQuantity > 0) {
+      await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
+    } else {
+      await itemDBHelper.deleteItem(item.id!);
+    }
+    await _loadItemsFromDatabase();
+
     setState(() {
       Item cartItem = Item(
         id: item.id,
@@ -127,25 +135,18 @@ class _PointofSalePageState extends State<PointofSalePage> {
       );
       cartItems.add(cartItem);
     });
-    int newQuantity = int.parse(item.quantity) - 1;
-    if (newQuantity > 0) {
-      await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
-    } else {
-      await itemDBHelper.deleteItem(item.id!);
-    }
-    await _loadItemsFromDatabase();
   }
 
   void onRemoveItem(int index) async {
     Item item = cartItems[index];
-    setState(() {
-      cartItems.removeAt(index);
-    });
-
     int existingQuantity = int.parse(ItemData.items.firstWhere((i) => i.id == item.id).quantity);
     int newQuantity = existingQuantity + 1;
     await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
     await _loadItemsFromDatabase();
+
+    setState(() {
+      cartItems.removeAt(index);
+    });
   }
 
   void onCheckout() async {

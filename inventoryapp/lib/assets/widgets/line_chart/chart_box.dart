@@ -10,10 +10,10 @@ class MyGraph extends StatefulWidget {
 }
 
 class _MyGraphState extends State<MyGraph> {
-  String? selectedOption = 'Gross Value'; // Default selected option
-  String selectedMonth = 'Months'; // Default selected month
-  String selectedYear = 'Year'; // Default selected year
-  List<String> years = ['Year']; // List of years
+  String? selectedOption = 'Gross Sales';
+  String selectedMonth = 'Months';
+  String selectedYear = 'Year';
+  List<String> years = ['Year'];
 
   @override
   void initState() {
@@ -114,11 +114,22 @@ class _MyGraphState extends State<MyGraph> {
             children: [
               Expanded(
                 child: DataSelectionButton(
-                  option: 'Gross Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'Gross Value',
+                  option: 'Gross Sales\n€0.0\n€0.00 (0%)',
+                  isSelected: selectedOption == 'Gross Sales',
                   onPressed: () {
                     setState(() {
-                      selectedOption = 'Gross Value';
+                      selectedOption = 'Gross Sales';
+                    });
+                  },
+                ),
+              ),
+              Expanded(
+                child: DataSelectionButton(
+                  option: 'Refunds Value\n€0.0\n€0.00 (0%)',
+                  isSelected: selectedOption == 'Refunds Value',
+                  onPressed: () {
+                    setState(() {
+                      selectedOption = 'Refunds Value';
                     });
                   },
                 ),
@@ -140,7 +151,7 @@ class _MyGraphState extends State<MyGraph> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text('Gross Sales'),
+              Text(selectedOption!),
               Row(
                 children: [
                   MyDropDown(
