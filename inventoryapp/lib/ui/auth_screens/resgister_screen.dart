@@ -47,7 +47,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   style: GoogleFonts.aBeeZee(fontWeight: FontWeight.bold),
                 ),
                 _registrationForm(),
-                AuthScreenWidgets.authScreenButton(context,"Register",_emailController,_passwordController),
+                AuthScreenWidgets.authScreenButton(context,"Register",_emailController,_passwordController,false),
                 AuthScreenWidgets.linkedText(context, "Already have an account? Login", LoginScreen())
               ],
             ):Row(
@@ -70,7 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           style: GoogleFonts.aBeeZee(fontWeight: FontWeight.bold),
                         ),
                         _registrationForm(),
-                        AuthScreenWidgets.authScreenButton(context,"Register",_emailController,_passwordController),
+                        AuthScreenWidgets.authScreenButton(context,"Register",_emailController,_passwordController,false),
                         AuthScreenWidgets.linkedText(context, "Already have an account? Login", LoginScreen())
                       ],
                     ),

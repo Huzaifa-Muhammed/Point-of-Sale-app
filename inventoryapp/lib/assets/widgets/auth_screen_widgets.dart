@@ -1,12 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:inventoryapp/Model/employee_checkIn_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/data/employee_checkIn_data.dart';
-import 'package:inventoryapp/data/employee_data.dart';
 import '../../Model/employee_class.dart';
 import '../../sevices/employee_table_helper.dart';
+import '../../sevices/firebase_auth_service.dart';
 import '../../ui/home_screen.dart';
 import '../../ui/menu_screens/point_of_sale_page.dart';
 
@@ -52,12 +53,12 @@ class AuthScreenWidgets {
         ),
       ),
       validator: (value) =>
-          value!.length > 6 ? null : "Please enter the correct password",
+      value!.length > 6 ? null : "Please enter the correct password",
     );
   }
 
   static Widget authScreenButton(
-      BuildContext context, String _text, TextEditingController email, TextEditingController password) {
+      BuildContext context, String _text, TextEditingController email, TextEditingController password, bool isLoginMode) {
     return ElevatedButton(
       onPressed: () async {
         final dbHelper = EmployeeClassDatabaseHelper();
@@ -65,50 +66,60 @@ class AuthScreenWidgets {
         List<Employee> employees = await dbHelper.getAllEmployees();
         Employee? foundEmployee;
 
-        for (Employee employee in employees) {
-          if (employee.email == email.text && employee.password == password.text) {
-            foundEmployee = employee;
-            break;
+        if (isLoginMode) {
+          // Login Mode
+          for (Employee employee in employees) {
+            if (employee.email == email.text && employee.password == password.text) {
+              foundEmployee = employee;
+              break;
+            }
           }
-        }
 
-        if (foundEmployee != null) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PointofSalePage(
-                  true,
-                  eRole: foundEmployee!.role,
-                )),
-          );
-          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
-              employeeId: foundEmployee.id!,
-              checkInTime: DateTime.now());
-        } else if (email.text == "admin123@gmail.com" && password.text == "Admin123") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
-          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
-              employeeId: 123445, checkInTime: DateTime.now());
-        } else if (email.text == "h@gmail.com" && password.text == "123") {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => PointofSalePage(
-                  true,
-                  eRole: "Cashier",
-                )),
-          );
-          EmployeeCheckInData.currentCheckInUser = EmployeeCheckIn(
-              employeeId: 54432, checkInTime: DateTime.now());
+          if (foundEmployee != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => PointofSalePage(
+                    true,
+                    eRole: foundEmployee!.role,
+                  )),
+            );
+          } else {
+            final firebaseAuthService = FirebaseAuthService();
+            User? firebaseUser = await firebaseAuthService.signInWithEmailPassword(email.text, password.text);
+
+            if (firebaseUser != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Email or password is wrong'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
         } else {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return notSignedInDialog('Email or password is wrong');
-            },
-          );
+          // Sign-Up Mode
+          final firebaseAuthService = FirebaseAuthService();
+          User? firebaseUser = await firebaseAuthService.signUpWithEmailPassword(email.text, password.text);
+
+          if (firebaseUser != null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomeScreen()),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Sign up failed'),
+                backgroundColor: Colors.red,
+              ),
+            );
+          }
         }
       },
       style: ElevatedButton.styleFrom(
@@ -138,18 +149,8 @@ class AuthScreenWidgets {
       child: Text(
         text,
         style:
-            const TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
+        const TextStyle(color: Colors.black, fontWeight: FontWeight.w300),
       ),
-    );
-  }
-
-  static Widget notSignedInDialog(String error) {
-    return AlertDialog(
-      title: Text(error, style: GoogleFonts.playfairDisplay(fontSize: 20)),
-      backgroundColor: Colors.white,
-      shadowColor: Colors.blueAccent,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      alignment: Alignment.center,
     );
   }
 }

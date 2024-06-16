@@ -54,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _loginForm(),
-                        AuthScreenWidgets.authScreenButton(context, "LogIn",_emailController,_passwordController),
+                        AuthScreenWidgets.authScreenButton(context, "LogIn",_emailController,_passwordController,true),
                         AuthScreenWidgets.linkedText(context,"Don't have an account? Register" , RegisterPage()),
                       ],
                     ),
@@ -80,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         const Text('Remember me'),
                       ],
                     ),
-                    AuthScreenWidgets.authScreenButton(context, "LogIn",_emailController,_passwordController),
+                    AuthScreenWidgets.authScreenButton(context, "LogIn",_emailController,_passwordController,true),
                   ],
                 ),
                 AuthScreenWidgets.linkedText(context,"Don't have an account? Register" , RegisterPage()),
