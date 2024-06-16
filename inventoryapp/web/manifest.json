@@ -1,6 +1,6 @@
 {
-    "name": "inventoryapp",
-    "short_name": "inventoryapp",
+    "name": "Bizit Epos",
+    "short_name": "Bizit Epos",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

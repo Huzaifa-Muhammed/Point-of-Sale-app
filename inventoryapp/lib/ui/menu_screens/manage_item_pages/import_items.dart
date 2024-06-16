@@ -48,6 +48,10 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
       }
 
       setState(() {});
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data uploaded successfully')),
+      );
     }
   }
 
@@ -62,7 +66,7 @@ class _ImportItemsPageState extends State<ImportItemsPage> {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
       ),
-      body: Center(
+      body: const Center(
         child: Text('No data loaded.'),
       ),
       floatingActionButton: FloatingActionButton(
