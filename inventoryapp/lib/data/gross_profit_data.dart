@@ -1,13 +1,13 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:inventoryapp/Model/sold_item_class.dart';
+import '../Model/sold_item_class.dart';
 import '../sevices/soldItem_table_helper.dart';
 
-class MyData {
+class GrossProfitData {
   static final List<FlSpot> dataList = [];
 }
 
 Future<void> grossValue(int month,int year) async {
-  final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper(); // Initialize SoldItemClassDatabaseHelper
+  final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper();
   Map<DateTime, double> cartMap = {};
 
   final currentDate = DateTime.now();
@@ -20,13 +20,23 @@ Future<void> grossValue(int month,int year) async {
   final List<SoldItem> soldItemsList = await soldItemDBHelper.getSoldItemsByMonthAndYear(month, year);
   for (SoldItem soldItem in soldItemsList) {
     final DateTime date = DateTime(soldItem.date.year, soldItem.date.month, soldItem.date.day);
-    cartMap.update(date, (value) => value + double.parse(soldItem.item.price));
+
+    double costPrice = double.parse(soldItem.item.price);
+    double margin = double.parse(soldItem.item.margin.replaceAll('%', '')) / 100;
+    double quantity = double.parse(soldItem.item.quantity);
+
+    double sellingPrice = costPrice * (1 + margin);
+    double totalSales = sellingPrice * quantity;
+    double totalCost = costPrice * quantity;
+    double totalProfit = totalSales - totalCost;
+
+    cartMap.update(date, (value) => value + totalProfit);
   }
 
-  MyData.dataList.clear();
+  GrossProfitData.dataList.clear();
 
   for (int day = 1; day <= lastDayOfMonth; day++) {
     final date = DateTime(currentDate.year, currentDate.month, day);
-    MyData.dataList.add(FlSpot(day.toDouble(), cartMap[date]!));
+    GrossProfitData.dataList.add(FlSpot(day.toDouble(), cartMap[date]!));
   }
 }

@@ -3,9 +3,14 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 
 class MyDataTable extends StatefulWidget {
-  final List<FlSpot> spots;
+  final List<FlSpot> grossSalesSpots;
+  final List<FlSpot> grossProfitSpots;
 
-  const MyDataTable({super.key, required this.spots});
+  const MyDataTable({
+    super.key,
+    required this.grossSalesSpots,
+    required this.grossProfitSpots,
+  });
 
   @override
   State<MyDataTable> createState() => _MyDataTableState();
@@ -20,34 +25,54 @@ class _MyDataTableState extends State<MyDataTable> {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(
-                color: Colors.grey, width: 1),
+            border: Border.all(color: Colors.grey, width: 1),
           ),
           child: DataTable(
             columnSpacing: 90,
-            headingRowColor: WidgetStateProperty.all(
-                primaryColor),
+            headingRowColor: MaterialStateProperty.all(primaryColor),
             columns: const [
               DataColumn(
-                  label: Text('Date',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white))),
+                label: Text(
+                  'Date',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               DataColumn(
-                  label: Text('Gross Sales',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white))),
+                label: Text(
+                  'Gross Sales',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               DataColumn(
-                  label: Text('Refund',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white))),
+                label: Text(
+                  'Refund',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               DataColumn(
-                  label: Text('Gross Profit',
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.white))),
+                label: Text(
+                  'Gross Profit',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
             ],
-            rows: widget.spots.asMap().entries.map((entry) {
+            rows: widget.grossSalesSpots.asMap().entries.map((entry) {
               int index = entry.key;
-              FlSpot spot = entry.value;
+              FlSpot grossSaleSpot = entry.value;
+              FlSpot grossProfitSpot = widget.grossProfitSpots[index];
+
               return DataRow(
                 color: WidgetStateProperty.all<Color>(
                   index % 2 == 0
@@ -55,11 +80,10 @@ class _MyDataTableState extends State<MyDataTable> {
                       : Colors.white,
                 ),
                 cells: [
-                  DataCell(Text(spot.x.toStringAsFixed(0))), // Date column
-                  DataCell(Text(spot.y.toStringAsFixed(2))), // Gross Sale column
+                  DataCell(Text(grossSaleSpot.x.toStringAsFixed(0))), // Date column
+                  DataCell(Text(grossSaleSpot.y.toStringAsFixed(2))), // Gross Sale column
                   DataCell(Text('N/A')), // Placeholder for Refund column
-                  DataCell(Text('N/A')), // Placeholder for Profit column
-
+                  DataCell(Text(grossProfitSpot.y.toStringAsFixed(2))), // Gross Profit column
                 ],
               );
             }).toList(),

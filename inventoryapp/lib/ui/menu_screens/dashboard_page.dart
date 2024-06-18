@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import 'package:inventoryapp/data/chart_data.dart';
+import 'package:inventoryapp/data/gross_profit_data.dart';
+import 'package:inventoryapp/data/gross_sales_data.dart';
 import '../../../assets/widgets/data_table.dart';
 import '../../../assets/widgets/line_chart/chart_box.dart';
 import 'dart:async';
@@ -47,7 +48,7 @@ class _DashboardPageState extends State<DashboardPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 20), // Adjust spacing as needed
+              const SizedBox(height: 20),
               Material(
                 elevation: 10,
                 child: Container(
@@ -71,7 +72,8 @@ class _DashboardPageState extends State<DashboardPage> {
                       : MediaQuery.of(context).size.width - 400,
                   color: Colors.white,
                   child: MyDataTable(
-                    spots: MyData.dataList,
+                    grossSalesSpots: GrossSalesData.dataList,
+                    grossProfitSpots: GrossProfitData.dataList,
                   ),
                 ),
               ),

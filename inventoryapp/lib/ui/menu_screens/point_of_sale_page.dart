@@ -70,7 +70,14 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   double getSubtotal() {
-    return cartItems.fold(0, (sum, item) => sum + (double.parse(item.price) * int.parse(item.quantity)));
+    return cartItems.fold(0, (sum, item) {
+      double price = double.parse(item.price);
+      double margin = double.parse(item.margin.replaceAll('%', '')) / 100;
+      int quantity = int.parse(item.quantity);
+
+      double sellingPrice = price * (1 + margin);
+      return sum + (sellingPrice * quantity);
+    });
   }
 
   void importItems() {
@@ -230,6 +237,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       drawer: CustomDrawer(
         onProfilePressed: () {},
         onAddItemPressed: () {

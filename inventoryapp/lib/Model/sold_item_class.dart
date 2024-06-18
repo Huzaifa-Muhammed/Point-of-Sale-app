@@ -1,9 +1,7 @@
-
-
 import 'item_class.dart';
 
 class SoldItem {
-  int? id; // Add id for database primary key
+  int? id;
   Item item;
   DateTime date;
 
@@ -16,7 +14,7 @@ class SoldItem {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'item_id': item.id, // Assuming item has an id
+      'item_id': item.id,
       'item_name': item.name,
       'category': item.category,
       'price': item.price,

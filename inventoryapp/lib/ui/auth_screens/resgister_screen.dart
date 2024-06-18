@@ -15,6 +15,8 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Images images = Images();
 
+  bool _isObscure = true;
+
   final GlobalKey<FormState> _registerFormKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
@@ -95,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
           mainAxisSize: MainAxisSize.max,
           children: [
             AuthScreenWidgets.emailTextField(_emailController),
-            AuthScreenWidgets.passwordTextField(_passwordController, true, () {},),
+            AuthScreenWidgets.passwordTextField(_passwordController, _isObscure, () {setState(() {_isObscure = !_isObscure;});},),
           ],
         ),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../../Model/item_class.dart';
@@ -119,11 +120,11 @@ class _AddItemPageState extends State<AddItemPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildTextField(nameController, 'Name', nameError),
-              buildTextField(categoryController, 'Category', categoryError),
-              buildTextField(marginController, 'Margin', marginError),
-              buildTextField(quantityController, 'Quantity', quantityError, keyboardType: TextInputType.number),
-              buildTextField(priceController, 'Price', priceError, keyboardType: TextInputType.number),
+              buildTextField(nameController, 'Name', nameError,false,false,),
+              buildTextField(categoryController, 'Category', categoryError,false,false,),
+              buildTextField(marginController, 'Margin', marginError,true,true,),
+              buildTextField(quantityController, 'Quantity', quantityError,false,true, keyboardType: TextInputType.number),
+              buildTextField(priceController, 'Price', priceError,false,true, keyboardType: TextInputType.number),
               ElevatedButton(
                 onPressed: addItem,
                 style: ElevatedButton.styleFrom(
@@ -140,12 +141,13 @@ class _AddItemPageState extends State<AddItemPage> {
     );
   }
 
-  Padding buildTextField(TextEditingController controller, String label, String? errorText, {TextInputType keyboardType = TextInputType.text}) {
+  Padding buildTextField(TextEditingController controller, String label, String? errorText,bool showPercentage,bool isNumber, {TextInputType keyboardType = TextInputType.text}) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8.0),
       child: TextField(
         controller: controller,
         decoration: InputDecoration(
+          suffix: showPercentage?Text('%',style: TextStyle(fontSize: 30),):null,
           labelText: label,
           labelStyle: const TextStyle(
             fontSize: 16,
@@ -157,6 +159,9 @@ class _AddItemPageState extends State<AddItemPage> {
           ),
         ),
         keyboardType: keyboardType,
+        inputFormatters: <TextInputFormatter>[
+          isNumber?FilteringTextInputFormatter.digitsOnly:FilteringTextInputFormatter.singleLineFormatter
+        ],
       ),
     );
   }

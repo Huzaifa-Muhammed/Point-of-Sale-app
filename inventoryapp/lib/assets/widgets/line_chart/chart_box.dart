@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../data/chart_data.dart';
+import 'package:inventoryapp/data/gross_profit_data.dart';
+import '../../../data/gross_sales_data.dart';
 import '../drop_down.dart';
 import 'components/data_selection_button.dart';
 import 'components/line_chart.dart';
@@ -24,6 +25,7 @@ class _MyGraphState extends State<MyGraph> {
     }
 
     try {
+      grossSalesValue(DateTime.now().month, DateTime.now().year);
       grossValue(DateTime.now().month, DateTime.now().year);
     } catch (e) {
       showDialog(
@@ -39,22 +41,39 @@ class _MyGraphState extends State<MyGraph> {
         },
       );
     }
-    for (int i = 0; i < MyData.dataList.length; i++) {
-      print("x: ${MyData.dataList[i].x}  y: ${MyData.dataList[i].y} ");
+    for (int i = 0; i < GrossSalesData.dataList.length; i++) {
+      print("x: ${GrossSalesData.dataList[i].x}  y: ${GrossSalesData.dataList[i].y} ");
     }
   }
 
-  void updateChartData(String month, String year) {
+  void updateChartData(String month, String year,String? option) {
     setState(() {
       selectedMonth = month;
       selectedYear = year;
       int monthNumber = getMonthNumber(month);
+      if (year=="Year")
+        {
+          year=DateTime.now().year.toString();
+        }
       int yearNumber = int.parse(year);
+      print("Year value is :$year");
+
 
       // Update the data based on the selected month and year
       if (monthNumber != 0 && yearNumber != 0) {
         try {
-          grossValue(monthNumber, yearNumber);
+          if (option=='Gross Sales') {
+            print("function1");
+            grossSalesValue(monthNumber, yearNumber);
+          }else if(option== 'Gross Profit Value')
+          {
+            print("Function2");
+            grossValue(monthNumber, yearNumber);
+          }else
+            {
+              print("Function3");
+              grossSalesValue(monthNumber, yearNumber);
+            }
         } catch (e) {
           showDialog(
             context: context,
@@ -119,28 +138,31 @@ class _MyGraphState extends State<MyGraph> {
                   onPressed: () {
                     setState(() {
                       selectedOption = 'Gross Sales';
+                      updateChartData(selectedMonth, selectedYear,selectedOption);
                     });
                   },
                 ),
               ),
               Expanded(
                 child: DataSelectionButton(
-                  option: 'Refunds Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'Refunds Value',
+                  option: 'Refunds\n€0.0\n€0.00 (0%)',
+                  isSelected: selectedOption == 'No.of Items Refund Today',
                   onPressed: () {
                     setState(() {
-                      selectedOption = 'Refunds Value';
+                      selectedOption = 'No.of Items Refund Today';
+                      updateChartData(selectedMonth, selectedYear,selectedOption);
                     });
                   },
                 ),
               ),
               Expanded(
                 child: DataSelectionButton(
-                  option: 'Gross Profit Value\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'Gross Profit Value',
+                  option: 'Gross Profit\n€0.0\n€0.00 (0%)',
+                  isSelected: selectedOption == 'Gross Profit',
                   onPressed: () {
                     setState(() {
-                      selectedOption = 'Gross Profit Value';
+                      selectedOption = 'Gross Profit';
+                      updateChartData(selectedMonth, selectedYear,selectedOption);
                     });
                   },
                 ),
@@ -173,7 +195,7 @@ class _MyGraphState extends State<MyGraph> {
                     ],
                     onChanged: (value) {
                       if (value != "Months" || selectedYear != "Year") {
-                        updateChartData(value, selectedYear);
+                        updateChartData(value, selectedYear,selectedOption);
                       }
                     },
                   ),
@@ -182,7 +204,7 @@ class _MyGraphState extends State<MyGraph> {
                     items: years,
                     onChanged: (value) {
                       if (value != "Year" || selectedMonth != "Months") {
-                        updateChartData(selectedMonth, value);
+                        updateChartData(selectedMonth, value,selectedOption);
                       }
                     },
                   ),
@@ -195,7 +217,7 @@ class _MyGraphState extends State<MyGraph> {
               scrollDirection: Axis.horizontal,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: MyLineChart(spots: MyData.dataList),
+                child: MyLineChart(spots: selectedOption=="Gross Sales"?GrossSalesData.dataList:GrossProfitData.dataList),
               ),
             ),
           ),

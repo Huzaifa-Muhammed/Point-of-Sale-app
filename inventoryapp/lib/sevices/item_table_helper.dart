@@ -10,7 +10,7 @@ class ItemClassDatabaseHelper {
     final String path = await getDatabasesPath();
     final String databasePath = join(path, 'items.db');
 
-    // Open the database or create if it doesn't exist
+
     _database = await openDatabase(
       databasePath,
       version: 1,

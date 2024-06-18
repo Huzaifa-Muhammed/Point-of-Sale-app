@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/ui/menu_screens/refund_item.dart';
 import '../Utils/image_paths.dart';
 import '../assets/widgets/sidebar.dart';
 import 'menu_screens/aboutUs_page.dart';
@@ -27,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool visible = true;
   int _cartSelectedIndex = 0;
   int _employeeSelectedIndex = 0;
+  int _aISelectedIndex=0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ProfilePage(),
       DashboardPage(false),
       FavoritePage(),
-      PointofSalePage(false, eRole: ""),
+      FavoritePage(),
       EmployeeAccessRightsPage(),
       CustomerPage(),
       SettingsPage(),
@@ -50,6 +52,11 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> employeePages = [
       EmployeeList(),
       EmployeeAccessRightsPage(),
+    ];
+
+    final List<Widget> advanceInventoryPages=[
+      PointofSalePage(false, eRole: " "),
+      RefundItemPage(),
     ];
 
     bool isMobile = MediaQuery.of(context).size.width < 600;
@@ -94,7 +101,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       return cartPages[_cartSelectedIndex];
                     } else if (_selectedIndex == 4) {
                       return employeePages[_employeeSelectedIndex];
-                    } else {
+                    }else if(_selectedIndex == 3){
+                      return advanceInventoryPages[_aISelectedIndex];
+                    }
+                    else {
                       return pages[_selectedIndex];
                     }
                   },
@@ -103,10 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
           Positioned(
-            top: _selectedIndex == 2 ? 130 : 260,
+            top: _selectedIndex == 2 ? 130 : _selectedIndex == 4 ? 260 : 180,
             left: MediaQuery.of(context).size.width * 0.25,
             child: Visibility(
-              visible: (_selectedIndex == 2 || _selectedIndex == 4) && visible,
+              visible: (_selectedIndex == 2 || _selectedIndex == 4 || _selectedIndex==3) && visible,
               child: Container(
                 width: 150,
                 color: Colors.grey.shade200,
@@ -119,7 +129,10 @@ class _HomeScreenState extends State<HomeScreen> {
                         setState(() {
                           if (_selectedIndex == 2) {
                             _cartSelectedIndex = 0;
-                          } else {
+                          }else if(_selectedIndex == 3){
+                            _aISelectedIndex=0;
+                          }
+                          else {
                             _employeeSelectedIndex = 0;
                           }
                           visible = false;
@@ -129,14 +142,17 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: const RoundedRectangleBorder(),
                         fixedSize: const Size.fromWidth(150),
                       ),
-                      child: Text(_selectedIndex == 4 ? 'Employee List' : 'Add Items'),
+                      child: Text(_selectedIndex == 4 ? 'Employee List' : _selectedIndex == 3 ? 'POS' : 'Add Items'),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
                           if (_selectedIndex == 2) {
                             _cartSelectedIndex = 1;
-                          } else {
+                          }else if(_selectedIndex == 3){
+                            _aISelectedIndex=1;
+                          }
+                          else {
                             _employeeSelectedIndex = 1;
                           }
                           visible = false;
@@ -146,7 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         shape: const RoundedRectangleBorder(),
                         fixedSize: const Size.fromWidth(150),
                       ),
-                      child: Text(_selectedIndex == 4 ? 'Access Right' : 'Items List'),
+                      child: Text(_selectedIndex == 4 ? 'Access Right' : _selectedIndex == 3 ? 'Add Refunded Item' : 'Items List'),
                     ),
                     if (_selectedIndex == 2)
                       ElevatedButton(
