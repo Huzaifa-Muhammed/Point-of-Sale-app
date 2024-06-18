@@ -10,7 +10,7 @@ class ItemClassDatabaseHelper {
     final String path = await getDatabasesPath();
     final String databasePath = join(path, 'items.db');
 
-
+    // Open the database or create if it doesn't exist
     _database = await openDatabase(
       databasePath,
       version: 1,
@@ -28,7 +28,6 @@ class ItemClassDatabaseHelper {
     return await _database.insert('items', item.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
-
 
   Future<List<Item>> getAllItems() async {
     await initializeDatabase();
@@ -58,7 +57,6 @@ class ItemClassDatabaseHelper {
     );
   }
 
-  // Delete an item from the database
   Future<int> deleteItem(int id) async {
     await initializeDatabase();
     return await _database.delete(
@@ -66,5 +64,19 @@ class ItemClassDatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  Future<Item?> getItemByNameAndCategory(String name, String category) async {
+    await initializeDatabase();
+    final List<Map<String, dynamic>> maps = await _database.query(
+      'items',
+      where: 'name = ? AND category = ?',
+      whereArgs: [name, category],
+    );
+
+    if (maps.isNotEmpty) {
+      return Item.fromMap(maps.first);
+    }
+    return null;
   }
 }

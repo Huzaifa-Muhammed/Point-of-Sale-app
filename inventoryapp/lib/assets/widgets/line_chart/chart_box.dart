@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/data/gross_profit_data.dart';
+import 'package:inventoryapp/data/total_refund_data.dart';
 import '../../../data/gross_sales_data.dart';
 import '../drop_down.dart';
 import 'components/data_selection_button.dart';
@@ -27,6 +28,7 @@ class _MyGraphState extends State<MyGraph> {
     try {
       grossSalesValue(DateTime.now().month, DateTime.now().year);
       grossValue(DateTime.now().month, DateTime.now().year);
+      grossRefundValue(DateTime.now().month, DateTime.now().year);
     } catch (e) {
       showDialog(
         context: context,
@@ -56,7 +58,6 @@ class _MyGraphState extends State<MyGraph> {
           year=DateTime.now().year.toString();
         }
       int yearNumber = int.parse(year);
-      print("Year value is :$year");
 
 
       // Update the data based on the selected month and year
@@ -65,14 +66,18 @@ class _MyGraphState extends State<MyGraph> {
           if (option=='Gross Sales') {
             print("function1");
             grossSalesValue(monthNumber, yearNumber);
-          }else if(option== 'Gross Profit Value')
+          }else if(option=='Gross Profit' )
           {
             print("Function2");
             grossValue(monthNumber, yearNumber);
-          }else
+          }else if(option=='Total amount of Refund Today')
             {
               print("Function3");
-              grossSalesValue(monthNumber, yearNumber);
+              grossRefundValue(monthNumber, yearNumber);
+            }
+          else
+            {
+              print("Else Condition");
             }
         } catch (e) {
           showDialog(
@@ -146,10 +151,10 @@ class _MyGraphState extends State<MyGraph> {
               Expanded(
                 child: DataSelectionButton(
                   option: 'Refunds\n€0.0\n€0.00 (0%)',
-                  isSelected: selectedOption == 'No.of Items Refund Today',
+                  isSelected: selectedOption == 'Total amount of Refund Today',
                   onPressed: () {
                     setState(() {
-                      selectedOption = 'No.of Items Refund Today';
+                      selectedOption = 'Total amount of Refund Today';
                       updateChartData(selectedMonth, selectedYear,selectedOption);
                     });
                   },
@@ -217,7 +222,7 @@ class _MyGraphState extends State<MyGraph> {
               scrollDirection: Axis.horizontal,
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: MyLineChart(spots: selectedOption=="Gross Sales"?GrossSalesData.dataList:GrossProfitData.dataList),
+                child: MyLineChart(spots: selectedOption=="Gross Sales"?GrossSalesData.dataList:selectedOption=="Gross Profit"?GrossProfitData.dataList:GrossRefundData.dataList),
               ),
             ),
           ),

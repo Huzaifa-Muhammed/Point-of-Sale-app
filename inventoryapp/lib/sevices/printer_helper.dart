@@ -33,7 +33,7 @@ class PrinterHelper {
               ),
               pw.SizedBox(height: 20),
               pw.Text(
-                'Total: €${cartItems.fold<double>(0, (sum, item) => sum + (double.tryParse(item.price) ?? 0) * (int.tryParse(item.quantity) ?? 1)).toStringAsFixed(2)}',
+                'Total: (\u20AC)${cartItems.fold<double>(0, (sum, item) => sum + (double.tryParse(item.price) ?? 0) * (int.tryParse(item.quantity) ?? 1)).toStringAsFixed(2)}',
                 style: pw.TextStyle(fontSize: 18),
               ),
             ],

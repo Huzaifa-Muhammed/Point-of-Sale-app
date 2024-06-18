@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/data/gross_profit_data.dart';
 import 'package:inventoryapp/data/gross_sales_data.dart';
+import 'package:inventoryapp/data/total_refund_data.dart';
 import '../../../assets/widgets/data_table.dart';
 import '../../../assets/widgets/line_chart/chart_box.dart';
 import 'dart:async';
@@ -74,6 +75,7 @@ class _DashboardPageState extends State<DashboardPage> {
                   child: MyDataTable(
                     grossSalesSpots: GrossSalesData.dataList,
                     grossProfitSpots: GrossProfitData.dataList,
+                    grossRefundSpots:GrossRefundData.dataList,
                   ),
                 ),
               ),

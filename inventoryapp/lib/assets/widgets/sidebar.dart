@@ -38,7 +38,7 @@ class _SideBarState extends State<SideBar> {
         ),
         NavigationRailDestination(
           icon: Icon(Icons.trolley,color: Colors.lightBlueAccent.shade700,),
-          label: const Text('POS'),
+          label: const Text('Advance Inventory'),
         ),
         NavigationRailDestination(
           icon: Icon(Icons.contact_mail_rounded,color: Colors.lightGreenAccent.shade700,),

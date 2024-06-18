@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:inventoryapp/Utils/constants.dart';
+import 'package:inventoryapp/data/total_refund_data.dart';
 
 class MyDataTable extends StatefulWidget {
   final List<FlSpot> grossSalesSpots;
   final List<FlSpot> grossProfitSpots;
+  final List<FlSpot> grossRefundSpots;
 
   const MyDataTable({
     super.key,
     required this.grossSalesSpots,
     required this.grossProfitSpots,
+    required this.grossRefundSpots,
   });
 
   @override
@@ -72,6 +75,7 @@ class _MyDataTableState extends State<MyDataTable> {
               int index = entry.key;
               FlSpot grossSaleSpot = entry.value;
               FlSpot grossProfitSpot = widget.grossProfitSpots[index];
+              FlSpot grossRefundSpot = widget.grossRefundSpots[index];
 
               return DataRow(
                 color: WidgetStateProperty.all<Color>(
@@ -82,7 +86,7 @@ class _MyDataTableState extends State<MyDataTable> {
                 cells: [
                   DataCell(Text(grossSaleSpot.x.toStringAsFixed(0))), // Date column
                   DataCell(Text(grossSaleSpot.y.toStringAsFixed(2))), // Gross Sale column
-                  DataCell(Text('N/A')), // Placeholder for Refund column
+                  DataCell(Text(grossRefundSpot.y.toStringAsFixed(2))), // Placeholder for Refund column
                   DataCell(Text(grossProfitSpot.y.toStringAsFixed(2))), // Gross Profit column
                 ],
               );
