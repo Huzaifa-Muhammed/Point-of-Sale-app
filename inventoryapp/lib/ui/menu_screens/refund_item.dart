@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:inventoryapp/Model/item_class.dart';
-import 'package:inventoryapp/sevices/item_table_helper.dart';
+import 'package:inventoryapp/sevices/database/item_table_helper.dart';
 import 'package:inventoryapp/Model/Refunded_Items.dart';
-import '../../sevices/refunded_table_helper.dart';
+import '../../sevices/database/refunded_table_helper.dart';
 
 class RefundItemPage extends StatefulWidget {
   @override

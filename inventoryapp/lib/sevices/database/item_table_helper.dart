@@ -1,7 +1,7 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
 import 'dart:async';
-import '../Model/item_class.dart';
+import '../../Model/item_class.dart';
 
 class ItemClassDatabaseHelper {
   late Database _database;

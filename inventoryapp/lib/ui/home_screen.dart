@@ -6,7 +6,7 @@ import '../Utils/image_paths.dart';
 import '../assets/widgets/sidebar.dart';
 import 'menu_screens/aboutUs_page.dart';
 import 'menu_screens/dashboard_page.dart';
-import 'menu_screens/discount_page.dart';
+import 'menu_screens/manage_discount_page/discount_page.dart';
 import 'menu_screens/favorite_page.dart';
 import 'menu_screens/manage_customer_pages/customer_page.dart';
 import 'menu_screens/manage_employee_pages/employee_access_right.dart';

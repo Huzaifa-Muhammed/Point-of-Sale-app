@@ -5,7 +5,7 @@ import '../../../../Model/customer_class.dart';
 import '../../../../Utils/constants.dart';
 import 'add_customer_page.dart';
 import 'import_customers.dart';
-import '../../../sevices/customer_table_helper.dart';
+import '../../../sevices/database/customer_table_helper.dart';
 
 class CustomerPage extends StatefulWidget {
   @override

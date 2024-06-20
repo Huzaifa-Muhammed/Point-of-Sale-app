@@ -5,7 +5,7 @@ import 'package:pdf/widgets.dart' show TableHelper;
 import '../Model/item_class.dart';
 
 class PrinterHelper {
-  static Future<void> printReceipt(List<Item> cartItems) async {
+  static Future<void> printReceipt(List<Item> cartItems,double subTotal) async {
     final pdf = pw.Document();
     final date = DateTime.now();
     final dateString = "${date.day}-${date.month}-${date.year} \t\t${date.hour}:${date.minute}:${date.second}";
@@ -33,9 +33,10 @@ class PrinterHelper {
               ),
               pw.SizedBox(height: 20),
               pw.Text(
-                'Total: (\u20AC)${cartItems.fold<double>(0, (sum, item) => sum + (double.tryParse(item.price) ?? 0) * (int.tryParse(item.quantity) ?? 1)).toStringAsFixed(2)}',
+                'Total: ${subTotal}',
                 style: pw.TextStyle(fontSize: 18),
               ),
+
             ],
           );
         },

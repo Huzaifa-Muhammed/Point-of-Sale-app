@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:inventoryapp/Model/sold_item_class.dart';
-import '../sevices/soldItem_table_helper.dart';
+import '../sevices/database/soldItem_table_helper.dart';
 
 class GrossSalesData {
   static final List<FlSpot> dataList = [];

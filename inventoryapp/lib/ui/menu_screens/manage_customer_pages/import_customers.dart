@@ -4,7 +4,7 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import '../../../../Model/customer_class.dart';
 import '../../../../Utils/constants.dart';
-import '../../../sevices/customer_table_helper.dart';
+import '../../../sevices/database/customer_table_helper.dart';
 
 class ImportCustomer extends StatefulWidget {
   @override

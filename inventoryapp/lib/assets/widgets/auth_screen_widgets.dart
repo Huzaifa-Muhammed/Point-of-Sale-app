@@ -6,7 +6,7 @@ import 'package:inventoryapp/Model/employee_checkIn_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/data/employee_checkIn_data.dart';
 import '../../Model/employee_class.dart';
-import '../../sevices/employee_table_helper.dart';
+import '../../sevices/database/employee_table_helper.dart';
 import '../../sevices/firebase_auth_service.dart';
 import '../../ui/home_screen.dart';
 import '../../ui/menu_screens/point_of_sale_page.dart';

@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import '../../../../Model/item_class.dart';
-import '../../../../sevices/item_table_helper.dart';
+import '../../../assets/widgets/custom_textfeild.dart';
+import '../../../sevices/database/item_table_helper.dart';
 
 class AddItemPage extends StatefulWidget {
   @override
@@ -120,11 +121,11 @@ class _AddItemPageState extends State<AddItemPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              buildTextField(nameController, 'Name', nameError,false,false,),
-              buildTextField(categoryController, 'Category', categoryError,false,false,),
-              buildTextField(marginController, 'Margin', marginError,true,true,),
-              buildTextField(quantityController, 'Quantity', quantityError,false,true, keyboardType: TextInputType.number),
-              buildTextField(priceController, 'Price', priceError,false,true, keyboardType: TextInputType.number),
+              CustomTextField(labelText: 'Name', controller: nameController, errorText: nameError,),
+              CustomTextField(labelText: 'Category', controller: categoryController, errorText: categoryError,),
+              CustomTextField(labelText: 'Margin', controller: marginController, errorText: marginError, showPercentage: true, isNumber: true,),
+              CustomTextField(labelText: 'Quantity', controller: quantityController, errorText: quantityError, keyboardType: TextInputType.number, isNumber: true,),
+              CustomTextField(labelText: 'Price', controller: priceController, errorText: priceError, keyboardType: TextInputType.number, isNumber: true,),
               ElevatedButton(
                 onPressed: addItem,
                 style: ElevatedButton.styleFrom(
@@ -137,31 +138,6 @@ class _AddItemPageState extends State<AddItemPage> {
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Padding buildTextField(TextEditingController controller, String label, String? errorText,bool showPercentage,bool isNumber, {TextInputType keyboardType = TextInputType.text}) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-          suffix: showPercentage?Text('%',style: TextStyle(fontSize: 30),):null,
-          labelText: label,
-          labelStyle: const TextStyle(
-            fontSize: 16,
-            color: primaryColor,
-          ),
-          errorText: errorText,
-          border: OutlineInputBorder(
-            borderSide: BorderSide(color: errorText != null ? Colors.red : Colors.grey),
-          ),
-        ),
-        keyboardType: keyboardType,
-        inputFormatters: <TextInputFormatter>[
-          isNumber?FilteringTextInputFormatter.digitsOnly:FilteringTextInputFormatter.singleLineFormatter
-        ],
       ),
     );
   }

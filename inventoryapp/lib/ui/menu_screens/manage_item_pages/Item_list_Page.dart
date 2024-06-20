@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import 'package:inventoryapp/Model/item_class.dart';
 import 'dart:async';
-import '../../../../sevices/item_table_helper.dart';
+import '../../../sevices/database/item_table_helper.dart';
 import 'add_items.dart';
 
 class ItemListPage extends StatefulWidget {

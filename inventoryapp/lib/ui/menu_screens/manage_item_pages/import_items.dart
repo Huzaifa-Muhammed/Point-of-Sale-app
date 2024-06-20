@@ -4,7 +4,7 @@ import 'package:excel/excel.dart';
 import 'dart:io';
 import '../../../../Model/item_class.dart';
 import '../../../../Utils/constants.dart';
-import '../../../../sevices/item_table_helper.dart';
+import '../../../sevices/database/item_table_helper.dart';
 
 class ImportItemsPage extends StatefulWidget {
   @override

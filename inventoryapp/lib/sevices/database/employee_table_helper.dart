@@ -1,6 +1,6 @@
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import '../Model/employee_class.dart';
+import '../../Model/employee_class.dart';
 
 class EmployeeClassDatabaseHelper {
   late Database _database;

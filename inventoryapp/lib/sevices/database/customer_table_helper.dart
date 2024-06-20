@@ -1,6 +1,6 @@
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path/path.dart';
-import '../Model/customer_class.dart';
+import '../../Model/customer_class.dart';
 
 class CustomerClassDatabaseHelper {
   static final CustomerClassDatabaseHelper _instance = CustomerClassDatabaseHelper._internal();

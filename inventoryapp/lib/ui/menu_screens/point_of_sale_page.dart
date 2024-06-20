@@ -8,13 +8,15 @@ import 'package:inventoryapp/assets/widgets/custom_drawer.dart';
 import 'package:inventoryapp/utils/constants.dart';
 import '../../../Model/item_class.dart';
 import '../../../Model/sold_item_class.dart';
+import '../../../Model/discount_class.dart';
 import '../../../assets/widgets/POS_widgets/custom_item_list.dart';
 import '../../../assets/widgets/POS_widgets/pos_cart.dart';
 import '../../../assets/widgets/POS_widgets/search_bar.dart';
 import '../../../assets/widgets/POS_widgets/sub_total.dart';
-import '../../sevices/item_table_helper.dart';
+import '../../sevices/database/discount_table_helper.dart';
+import '../../sevices/database/item_table_helper.dart';
+import '../../sevices/database/soldItem_table_helper.dart';
 import '../../sevices/printer_helper.dart';
-import '../../sevices/soldItem_table_helper.dart';
 import 'dashboard_page.dart';
 import 'manage_item_pages/add_items.dart';
 import 'manage_item_pages/add_items_page.dart';
@@ -33,8 +35,12 @@ class PointofSalePage extends StatefulWidget {
 class _PointofSalePageState extends State<PointofSalePage> {
   final SoldItemClassDatabaseHelper soldItemDBHelper = SoldItemClassDatabaseHelper();
   final ItemClassDatabaseHelper itemDBHelper = ItemClassDatabaseHelper();
+  final DiscountClassDatabaseHelper discountDBHelper =
+  DiscountClassDatabaseHelper();
   List<Item> cartItems = [];
   List<Item> filteredItems = [];
+  List<Discount> discounts = []; // List to hold available discounts
+  Discount? selectedDiscount; // Selected discount
   Timer? _timer;
 
   TextEditingController categoryController = TextEditingController();
@@ -44,6 +50,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   void initState() {
     super.initState();
     _loadItemsFromDatabase();
+    _loadDiscounts();
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {});
     });
@@ -59,6 +66,13 @@ class _PointofSalePageState extends State<PointofSalePage> {
     });
   }
 
+  Future<void> _loadDiscounts() async {
+    List<Discount> loadedDiscounts = await discountDBHelper.getDiscounts();
+    setState(() {
+      discounts = loadedDiscounts;
+    });
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -70,7 +84,7 @@ class _PointofSalePageState extends State<PointofSalePage> {
   }
 
   double getSubtotal() {
-    return cartItems.fold(0, (sum, item) {
+    double subtotal = cartItems.fold(0, (sum, item) {
       double price = double.parse(item.price);
       double margin = double.parse(item.margin.replaceAll('%', '')) / 100;
       int quantity = int.parse(item.quantity);
@@ -78,16 +92,25 @@ class _PointofSalePageState extends State<PointofSalePage> {
       double sellingPrice = price * (1 + margin);
       return sum + (sellingPrice * quantity);
     });
+    if (selectedDiscount != null) {
+      double discountAmount = subtotal * (selectedDiscount!.percentage / 100);
+      subtotal -= discountAmount;
+    }
+    return subtotal;
   }
 
   void importItems() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => ImportItemsPage()));
+      context,
+      MaterialPageRoute(builder: (context) => ImportItemsPage()),
+    );
   }
 
   void addItem() {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => AddItemPage()));
+      context,
+      MaterialPageRoute(builder: (context) => AddItemPage()),
+    );
   }
 
   void showErrorDialog(String message) {
@@ -164,7 +187,8 @@ class _PointofSalePageState extends State<PointofSalePage> {
 
   void onRemoveItem(int index) async {
     Item item = cartItems[index];
-    int existingQuantity = int.parse(ItemData.items.firstWhere((i) => i.id == item.id).quantity);
+    int existingQuantity =
+    int.parse(ItemData.items.firstWhere((i) => i.id == item.id).quantity);
     int newQuantity = existingQuantity + int.parse(item.quantity);
     await itemDBHelper.updateItemQuantity(item.id!, newQuantity.toString());
     await _loadItemsFromDatabase();
@@ -174,7 +198,42 @@ class _PointofSalePageState extends State<PointofSalePage> {
     });
   }
 
-  void onCheckout() async {
+  Future<void> onCheckout() async {
+    if (cartItems.isEmpty) {
+      showErrorDialog('Cart is empty. Add items to checkout.');
+      return;
+    }
+
+    // Show discount selection dialog
+    selectedDiscount = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Discount'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (var discount in discounts)
+                ListTile(
+                  title: Text(discount.name),
+                  subtitle: Text('${discount.percentage}% off'),
+                  onTap: () {
+                    Navigator.pop(context, discount);
+                  },
+                ),
+              ListTile(
+                title: Text('No Discount'),
+                onTap: () {
+                  Navigator.pop(context, null);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    // Perform checkout logic
     DateTime now = DateTime.now();
     for (Item item in cartItems) {
       SoldItem soldItem = SoldItem(
@@ -183,9 +242,10 @@ class _PointofSalePageState extends State<PointofSalePage> {
       );
       await soldItemDBHelper.insertSoldItem(soldItem);
     }
-    await PrinterHelper.printReceipt(cartItems);
+    await PrinterHelper.printReceipt(cartItems,getSubtotal());
     setState(() {
       cartItems.clear();
+      selectedDiscount = null; // Reset selected discount after checkout
     });
   }
 
@@ -242,9 +302,10 @@ class _PointofSalePageState extends State<PointofSalePage> {
         onProfilePressed: () {},
         onAddItemPressed: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => AddItem(showAppBar: true)));
+            context,
+            MaterialPageRoute(
+                builder: (context) => AddItem(showAppBar: true)),
+          );
         },
         onLogoutPressed: () {
           Navigator.pushAndRemoveUntil(
@@ -252,16 +313,20 @@ class _PointofSalePageState extends State<PointofSalePage> {
             MaterialPageRoute(builder: (context) => LoginScreen()),
                 (route) => false,
           );
-          EmployeeCheckInData.currentCheckInUser!.checkOutTime(DateTime.now());
+          EmployeeCheckInData.currentCheckInUser!
+              .checkOutTime(DateTime.now());
           EmployeeCheckInData.checkIn
               .add(EmployeeCheckInData.currentCheckInUser!);
           EmployeeCheckInData.currentCheckInUser = null;
-          print("CHECk IN LIST  length ${EmployeeCheckInData.checkIn.length}");
+          print(
+              "CHECK IN LIST length ${EmployeeCheckInData.checkIn.length}");
         },
         role: widget.eRole,
         onDashBoardPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => DashboardPage(true)));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => DashboardPage(true)),
+          );
         },
       ),
       appBar: widget.showAppBar
@@ -368,3 +433,5 @@ class _PointofSalePageState extends State<PointofSalePage> {
     );
   }
 }
+
+

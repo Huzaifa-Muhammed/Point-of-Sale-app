@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Utils/constants.dart';
 import '../../../../Model/employee_class.dart';
-import '../../../../sevices/employee_table_helper.dart';
+import '../../../sevices/database/employee_table_helper.dart';
 import 'employee_access_right_filter.dart';
 
 class EmployeeAccessRightsPage extends StatefulWidget {

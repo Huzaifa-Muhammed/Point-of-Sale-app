@@ -15,6 +15,7 @@ void main() async {
   );
 
   if (kIsWeb) {
+    sqfliteFfiWebStartSharedWorker(SqfliteFfiWebOptions());
     databaseFactory = databaseFactoryFfiWeb;
   } else {
     sqfliteFfiInit();

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:inventoryapp/Model/employee_class.dart';
 import 'package:inventoryapp/Utils/constants.dart';
-import '../../../../sevices/employee_table_helper.dart';
+import 'package:inventoryapp/assets/widgets/custom_textfeild.dart';
+import '../../../assets/widgets/drop_down.dart';
+import '../../../sevices/database/employee_table_helper.dart';
 
 class AddEmployeePage extends StatefulWidget {
   @override
@@ -50,59 +52,20 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: nameController,
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor,
-                    ),
-                    errorText: nameError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: nameError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                controller: nameController,
+                errorText: nameError,
+                labelText: 'Name',
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: cityController,
-                  decoration: InputDecoration(
-                    labelText: 'City',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor,
-                    ),
-                    errorText: cityError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: cityError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                controller: cityController,
+                errorText:  cityError,
+                labelText: 'City',
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: contactController,
-                  decoration: InputDecoration(
-                    labelText: 'Contact',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor,
-                    ),
-                    errorText: contactError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: contactError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                ),
+              CustomTextField(
+                controller: contactController,
+                errorText: contactError,
+                labelText: 'Contact',
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8.0),
@@ -134,53 +97,22 @@ class _AddEmployeePageState extends State<AddEmployeePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor,
-                    ),
-                    errorText: emailError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: emailError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
+              CustomTextField(
+                controller: emailController,
+                errorText: emailError,
+                labelText: 'Email',
+                keyboardType: TextInputType.emailAddress,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 8.0),
-                child: TextField(
-                  controller: passwordController,
-                  decoration: InputDecoration(
-                    labelText: 'Password',
-                    labelStyle: const TextStyle(
-                      fontSize: 16,
-                      color: primaryColor,
-                    ),
-                    errorText: passwordError,
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: passwordError != null ? Colors.red : Colors.grey),
-                    ),
-                  ),
-                  keyboardType: TextInputType.visiblePassword,
-                ),
+              CustomTextField(
+                controller: passwordController,
+                labelText: 'Password',
+                errorText: passwordError,
+                keyboardType: TextInputType.visiblePassword,
               ),
               ElevatedButton(
                 onPressed: () async {
                   validateFields();
-                  if (nameError == null &&
-                      cityError == null &&
-                      contactError == null &&
-                      positionError == null &&
-                      emailError == null &&
-                      passwordError == null) {
+                  if (nameError == null && cityError == null && contactError == null && positionError == null && emailError == null && passwordError == null) {
                     String access = selectedRole == 'Manager' ? 'full' : 'partial';
                     await databaseHelper.insertEmployee(Employee(
                       name: nameController.text,
