@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:inventoryapp/Utils/constants.dart';
 import '../../../Model/discount_class.dart';
 import '../../../assets/widgets/discount_card.dart';
 import '../../../sevices/database/discount_table_helper.dart';
@@ -32,7 +33,27 @@ class _DiscountPageState extends State<DiscountPage> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No discounts available.'));
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Center(child: Text('No discounts available.')),
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AddDiscountPage()),
+                    ).then((value) {
+                      setState(() {
+                        _discountsFuture = DiscountClassDatabaseHelper().getDiscounts();
+                      });
+                    });
+                  },
+                  backgroundColor: primaryColor,
+                  foregroundColor: Colors.white,
+                  child: const Icon(Icons.add),
+                ),
+              ],
+            );
           } else {
             final discounts = snapshot.data!;
             return GridView.builder(
