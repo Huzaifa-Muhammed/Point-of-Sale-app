@@ -1,6 +1,6 @@
 # 📦 Inventory Management System  
 
-A **Flutter Web & Desktop** application for efficient **inventory tracking, sales management, and reporting**. 🚀  
+A **Flutter Web & Desktop** application for efficient **inventory tracking, sales management, employee management, and reporting**. 🚀  
 Designed for **business owners and cashiers** to streamline stock management, sales processing, and customer records.  
 
 ---
@@ -8,6 +8,7 @@ Designed for **business owners and cashiers** to streamline stock management, sa
 ## 📌 Features  
 
 ✅ **Add Products** – Add items manually or bulk upload via **Excel file**.  
+✅ **Discount** – add discounts in app and apply discount to sales.  
 ✅ **Sales Management** – Process sales transactions and generate receipts.  
 ✅ **Receipt Printing** – Print invoices and sales receipts directly from the app.  
 ✅ **User Roles** – **Admin (Owner)** & **Cashier View** for controlled access.  
@@ -37,13 +38,26 @@ Designed for **business owners and cashiers** to streamline stock management, sa
 ## 📸 Screenshots  
 
 ### 🏠 Dashboard (Sales Overview)  
-<img src="screenshots/dashboard.jpg" alt="Dashboard" width="500">
+<img src="screenshots/dashboard1.png" alt="Dashboard" width="400" height="200">
+<img src="screenshots/dashboard2.png" alt="Dashboard" width="400" height="200">
 
 ### ➕ Add Product  
-<img src="screenshots/add_product.jpg" alt="Add Product" width="500">
+<img src="screenshots/add_items.png" alt="Add Product" width="400" height="200">
+<img src="screenshots/item_list.png" alt="Add Product" width="400" height="200">
 
-### 🛒 Sales & Receipt Printing  
-<img src="screenshots/sales.jpg" alt="Sales" width="500">
+### 🛒 POS  
+<img src="screenshots/pos.png" alt="Sales" width="400" height="200">
+<img src="screenshots/discount.png" alt="Sales" width="400" height="200">
+
+### 🖨️ Receipt Printing  
+<img src="screenshots/printer_option.png" alt="Sales" width="400" height="200">
+
+### 👤 Employee Management  
+<img src="screenshots/employee_list.png" alt="Sales" width="400" height="200">
+<img src="screenshots/employee_access.png" alt="Sales" width="400" height="200">
+
+### 👥 Admin and Employee View
+<img src="screenshots/employee_view.png" alt="Sales" width="400" height="200">
 
 ---
 
